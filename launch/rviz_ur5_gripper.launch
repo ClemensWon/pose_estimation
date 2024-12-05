@@ -2,7 +2,7 @@
 <launch>
 
     <!-- Associate to the robot description parameter, the urdf file that model the robot-->
-    <param name="robot_description" command = "$(find xacro)/xacro --inorder $(find pose_estimation)/urdf/ur5_yt_gripper.xacro" />
+    <param name="robot_description" command = "$(find xacro)/xacro --inorder $(find pose_estimation)/urdf/ur5_gripper.xacro" />
 
     <!-- Read the joint value-->
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />

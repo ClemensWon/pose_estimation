@@ -21,7 +21,8 @@
 
     <!-- Spawn the robot using the package gazebo_ros -->
     <node name="spawn_the_robot" pkg="gazebo_ros" type="spawn_model" output="screen" 
-          args="-urdf -param robot_description -model ur5_robot -x $(arg x) -y $(arg y) -z $(arg z) -P 1.5708 -Y 0" />
+        args="-urdf -param robot_description -model ur5_robot -x $(arg x) -y $(arg y) -z $(arg z)" />
+
     
 
     <!-- Spawn the table using the package gazebo_ros -->

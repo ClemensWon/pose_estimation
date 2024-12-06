@@ -5,6 +5,9 @@
 <!-- =================================================================================== -->
 <robot name="ur5_robot" xmlns:xacro="http://ros.org/wiki/xacro">
 
+
+    <xacro:property name="deg_to_rad" value="0.017453292519943295"/> <!-- pi/180 -->
+
     <!-- Include the table definition from another file -->
     <xacro:include filename="$(find pose_estimation)/urdf/table.urdf.xacro"/>
     <!-- Include kinetic definition from another file -->

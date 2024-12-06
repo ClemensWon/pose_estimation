@@ -7,6 +7,7 @@
 
     <!-- Include the table definition from another file -->
     <xacro:include filename="$(find pose_estimation)/urdf/table.urdf.xacro"/>
+    <!-- Include kinetic definition from another file -->
     <xacro:include filename="$(find pose_estimation)/urdf/sensors/kinetic_rgbd.urdf.xacro"/>
 
     <transmission name="shoulder_pan_trans">

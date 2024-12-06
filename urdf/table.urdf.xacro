@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="table_model">
+  <link name="table">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="1 1 0.05"/>
+      </geometry>
+      <material name="brown">
+        <color rgba="0.545 0.270 0.0745 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.5 1.5 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="20.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <!-- Make it static so it doesn't fall -->
+  <gazebo reference="table_link">
+    <static>true</static>
+  </gazebo>
+</robot>

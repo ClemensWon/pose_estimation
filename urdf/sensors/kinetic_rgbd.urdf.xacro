@@ -35,14 +35,14 @@
                 <!--
                 <box size="0.06 0.1 0.03" />
                     -->
-                    <mesh filename="package://ur_app_youtube/meshes/sensors/camera/kinetic.stl"/>
+                    <mesh filename="package://pose_estimation/meshes/sensors/camera/kinetic.stl"/>
                 </geometry>
                 <material name="DarkGrey"/>
             </visual>
             
             <collision>
                 <geometry>
-                    <mesh filename="package://ur_app_youtube/meshes/sensors/camera/kinetic.dae"/>
+                    <mesh filename="package://pose_estimation/meshes/sensors/camera/kinetic.dae"/>
                 </geometry>
             </collision>
         </link>

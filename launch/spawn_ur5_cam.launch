@@ -30,12 +30,12 @@
           args="-urdf -param table_description -model my_table -x 1.3 -y 0 -z 0" />
 
 
-    <!-- Associate the green cube description -->
-    <param name="green_cube_description" command="$(find xacro)/xacro --inorder $(find pose_estimation)/urdf/object1.urdf.xacro" />
-
-    <!-- Spawn the green cube on the table -->
-    <node name="spawn_green_cube" pkg="gazebo_ros" type="spawn_model" output="screen"
-        args="-urdf -param green_cube_description -model green_cube -x 1.3 -y 0 -z 0.1" />
+     <group ns="spawn_objects">
+        <rosparam file="$(find pose_estimation)/config/spawn_objects.yaml"/>
+    </group>
+    <node name="spawn_objects_node" pkg="pose_estimation" type="spawn_objects.py" output="screen">
+        
+    </node>
 
     
 </launch>

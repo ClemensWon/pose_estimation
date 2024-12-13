@@ -83,31 +83,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        rgbd_camera_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rgbd_camera_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rgbd_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rgbd_camera_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rgbd_camera_rgb_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        rgbd_camera_rgb_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         shoulder_link:
           Alpha: 1
           Show Axes: false
@@ -180,7 +155,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.365028381347656
+      Distance: 4.557685375213623
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -196,9 +171,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5953981280326843
+      Pitch: 0.2603980600833893
       Target Frame: <Fixed Frame>
-      Yaw: 0.20040053129196167
+      Yaw: 6.113583087921143
     Saved: ~
 Window Geometry:
   Displays:
@@ -216,5 +191,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 584
-  Y: 64
+  X: 697
+  Y: 133

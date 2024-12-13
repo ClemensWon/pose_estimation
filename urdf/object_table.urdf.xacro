@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="table_model2">
+
+  <!-- Define the table -->
+  <link name="object_table">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="1 1 0.05"/>
+      </geometry>
+      <material name="brown">
+        <color rgba="0.545 0.270 0.0745 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="1 1 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="20.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Define the world -->
+  <link name="world"/>
+
+  <!-- Fix the table to the world -->
+  <joint name="world_table_fixed_joint" type="fixed">
+    <parent link="world"/>
+    <child link="object_table"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Make the table static so it doesn't fall in Gazebo -->
+  <gazebo reference="object_table">
+    <static>true</static>
+  </gazebo>
+
+</robot>

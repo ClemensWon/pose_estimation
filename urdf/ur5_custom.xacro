@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+
+<robot name="ur5_custom" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Property Definitions -->
+  <xacro:property name="deg_to_rad" value="0.017453292519943295"/> <!-- pi/180 -->
+
+  <!-- Include the Default UR5 Xacro -->
+  <xacro:include filename="$(find ur_description)/urdf/ur5.xacro"/>
+
+  <!-- Inherit from the Default UR5 Model -->
+  <xacro:ur5_robot name="ur5_robot">
+    <!-- You can override default properties here if needed -->
+  </xacro:ur5_robot>
+
+  <!-- Add a Table Below the Robot -->
+  <link name="table">
+    <visual>
+      <geometry>
+        <box size="1.5 1.5 0.05"/>
+      </geometry>
+      <origin xyz="0 0 -0.025" rpy="0 0 0"/>
+      <material name="Brown">
+        <color rgba="0.55 0.27 0.07 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1.5 1.5 0.05"/>
+      </geometry>
+      <origin xyz="0 0 -0.025" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="20.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Fixed Joint to Attach the Table to the World -->
+  <joint name="world_table_fixed_joint" type="fixed">
+    <parent link="world"/>
+    <child link="table"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Attach the Robot to the Table -->
+  <joint name="table_robot_fixed_joint" type="fixed">
+    <parent link="table"/>
+    <child link="base_link"/>
+    <!-- Adjust the z-offset based on table height -->
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Add a Custom Sensor (e.g., Camera) to the Flange -->
+  <link name="custom_camera">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.02"/>
+      </geometry>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <material name="Black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.1" radius="0.02"/>
+      </geometry>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Fixed Joint to Attach the Camera to the Flange -->
+  <joint name="flange_camera_fixed_joint" type="fixed">
+    <parent link="flange"/>
+    <child link="custom_camera"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <!-- (Optional) Add Plugins or Additional Sensors Here -->
+
+</robot>

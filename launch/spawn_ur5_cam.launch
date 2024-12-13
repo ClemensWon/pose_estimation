@@ -5,7 +5,7 @@
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(find pose_estimation)/urdf/ur5_cam.xacro" />
     
     <!-- Associate the table description parameter with the table's URDF -->
-    <param name="table_description" command="$(find xacro)/xacro --inorder $(find pose_estimation)/urdf/table.urdf.xacro" />
+    <param name="table_description" command="$(find xacro)/xacro --inorder $(find pose_estimation)/urdf/object_table.urdf.xacro" />
 
     <!-- Load controller configurations -->
     <rosparam file="$(find pose_estimation)/config/ur5_controllers.yaml" command="load" />

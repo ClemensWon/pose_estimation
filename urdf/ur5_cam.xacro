@@ -10,8 +10,7 @@
 
     <!-- Include the table definition from another file -->
     <xacro:include filename="$(find pose_estimation)/urdf/table.urdf.xacro"/>
-    <!-- Include kinetic definition from another file -->
-    <xacro:include filename="$(find pose_estimation)/urdf/sensors/kinetic_rgbd.urdf.xacro"/>
+
 
     <transmission name="shoulder_pan_trans">
         <type>transmission_interface/SimpleTransmission</type>
@@ -378,15 +377,11 @@
     </sensor>
     </gazebo>
 
-         <!-- Define RGB-D sensor -->  
-    <xacro:kinetic_rgb name="rgbd_camera" parent="base">
-        <origin xyz="0.1 0.0 1.2" rpy="${0.0 * deg_to_rad} ${70.0 * deg_to_rad} ${0.0 * deg_to_rad}"/>
-        <origin xyz="0 0 0" rpy="${-90 * deg_to_rad} ${0 * deg_to_rad} ${-90 * deg_to_rad}" />
-    </xacro:kinetic_rgb>
 
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
             <robotNamespace>/ur5</robotNamespace>
         </plugin>
     </gazebo>
+
 </robot>

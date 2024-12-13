@@ -70,7 +70,7 @@
     </include>
 
     <include file= "$(find ur5_moveit_config_pose)/launch/moveit_rviz.launch" >
-        <arg name="rviz_config" value="$(find pose_estimation)/config/config.rviz" />
+        <arg name="rviz_config" value="$(find ur5_moveit_config_pose)/config/moveit.rviz" />
     </include>
 
 

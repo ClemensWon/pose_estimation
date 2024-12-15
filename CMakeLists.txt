@@ -19,6 +19,17 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
 )
 
+find_package(message_generation REQUIRED)
+add_message_files(
+  FILES
+  ObjectSpawned.msg
+  DeleteObject.msg
+)
+generate_messages(
+  DEPENDENCIES
+  geometry_msgs
+)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 

@@ -5,11 +5,15 @@
    git clone https://github.com/ClemensWon/PoseEstimation
 - In Folder /catkin_ws:  
    sudo apt-get update  
-   sudo apt-get install ros-noetic-gazebo-ros ros-noetic-moveit ros-noetic-tf-conversions ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-plugins ros-noetic-ros-control ros-noetic-ros-controllers ros-noetic-controller-manager
-  sudo apt-get install ros-noetic-joint-state-publisher-gui
+   sudo apt-get install ros-noetic-gazebo-ros ros-noetic-moveit ros-noetic-tf-conversions ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-plugins ros-noetic-ros-control ros-noetic-ros-controllers ros-noetic-controller-manager ros-noetic-joint-state-publisher-gui
 - In Folder /catkin_ws:
   catkin_make  
    source devel/setup.bash
   roslaunch PoseEstimation spawn_ur5_cam.launch
 
 https://www.youtube.com/watch?v=O0aZ0XFEYbU&list=PLJOHOcnvyOr3OqdanYQZIf7Rnga3VLmJA&index=5
+
+###added gripper (https://www.youtube.com/watch?v=L8GUKa93zUU&t=299s):
+
+- In Folder /catkin_ws/src:
+  git clone https://github.com/LearnRoboticsWROS/robotiq_description.git

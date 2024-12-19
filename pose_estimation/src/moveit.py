@@ -38,7 +38,7 @@ def main():
     rospy.init_node("joint_mover", anonymous=True)
 
     # Create a MoveGroupCommander for the manipulator
-    move_group = moveit_commander.MoveGroupCommander("manipulator")
+    move_group = moveit_commander.MoveGroupCommander("manipulator", wait_for_servers=30)
 
     # Initialize a publisher for status updates
     status_publisher = rospy.Publisher("/movement_status", String, queue_size=10)

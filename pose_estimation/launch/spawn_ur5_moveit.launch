@@ -51,12 +51,10 @@
         <arg name="publish_monitored_planning_scene" value="true" />
     </include>
 
+    <include file= "$(find ur5_robot_moveit_config)/launch/moveit_rviz.launch" >
+        <arg name="rviz_config" value="$(find ur5_robot_moveit_config)/launch/moveit.rviz" />
+    </include>
+
     <!-- Run moveit node -->
     <node name="ur5_robot_moveit" pkg="pose_estimation" type="moveit.py" output="screen" />
-
-
-<!--     <include file= "$(find ur5_robot_moveit_config)/launch/moveit_rviz.launch" > -->
-<!--         <arg name="rviz_config" value="$(find ur5_robot_moveit_config)/launch/moveit.rviz" /> -->
-<!--     </include> -->
-
 </launch>

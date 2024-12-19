@@ -16,4 +16,12 @@
   rostopic echo /object_spawned
   rostopic pubdelete_object your_package/DeleteObject "object_id: '1234-5678-90ab-cdef'"
 
+### To test moveit
+In folder /catkin_ws:
+- roslaunch pose_estimation spawn_ur5_moveit.launch
+- send some position values to moveit node:
+  - rostopic pub /joint_values std_msgs/Float64MultiArray "data: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
+
+
+
 https://www.youtube.com/watch?v=O0aZ0XFEYbU&list=PLJOHOcnvyOr3OqdanYQZIf7Rnga3VLmJA&index=5

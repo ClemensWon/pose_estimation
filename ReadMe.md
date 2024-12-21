@@ -23,5 +23,10 @@ In folder /catkin_ws:
   - rostopic pub /joint_values std_msgs/Float64MultiArray "data: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
 
 
+### To snap a photo
+In folder /catkin_ws:
+- roslaunch pose_estimation spawn_ur5_moveit.launch
+- rostopic pub /take_picture std_msgs/String "data: 'object1'"
+
 
 https://www.youtube.com/watch?v=O0aZ0XFEYbU&list=PLJOHOcnvyOr3OqdanYQZIf7Rnga3VLmJA&index=5

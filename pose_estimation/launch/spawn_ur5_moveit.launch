@@ -57,4 +57,7 @@
 
     <!-- Run moveit node -->
     <node name="ur5_robot_moveit" pkg="pose_estimation" type="moveit.py" output="screen" />
+
+    <!-- Run camera snap node -->
+    <node name="camera_snap" pkg="pose_estimation" type="camera_snap.py" output="screen" />
 </launch>

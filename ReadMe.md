@@ -36,7 +36,7 @@ rostopic pub /take_picture std_msgs/String "data: 'object1'"
   rostopic echo /object_spawned
   rostopic pubdelete_object your_package/DeleteObject "object_id: '1234-5678-90ab-cdef'"
 
-### Directory Structure
+## Directory Structure
 
 /pose_estimation (main directory)
 ../config
@@ -47,4 +47,4 @@ rostopic pub /take_picture std_msgs/String "data: 'object1'"
 ../urdf
 
 /robotiq_description (gripper directory)
-/u5_robot_moveit_config (moveit config directory)
+/moveitconfig (moveit config directory)

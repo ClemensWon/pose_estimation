@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: pose_estimation
+    relative_path: urdf/ur5_cam.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/ur5_robot.srdf
+  CONFIG:
+    author_name: georgtalasz
+    author_email: georgtalasz@hotmail.com
+    generated_timestamp: 1734966378

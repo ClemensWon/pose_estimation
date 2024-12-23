@@ -1,3 +1,7 @@
+## Project 5
+
+### Installation / Initialization
+
 - Start Container bash .....sh
 - CLONE ONCE:  
    Folder catkin_ws/src:  
@@ -10,23 +14,37 @@
 - In Folder /catkin_ws:
   catkin_make  
    source devel/setup.bash
-  roslaunch PoseEstimation spawn_ur5_cam.launch
-- Object Handling:
-  rostopic pubspawn_trigger std_msgs/Empty "{}
-  rostopic echo /object_spawned
-  rostopic pubdelete_object your_package/DeleteObject "object_id: '1234-5678-90ab-cdef'"
 
-### To test moveit
+### Test moveit
+
 In folder /catkin_ws:
+
 - roslaunch pose_estimation spawn_ur5_moveit.launch
 - send some position values to moveit node:
   - rostopic pub /joint_values std_msgs/Float64MultiArray "data: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
 
+### Snap a photo
 
-### To snap a photo
 In folder /catkin_ws:
-- roslaunch pose_estimation spawn_ur5_moveit.launch
-- rostopic pub /take_picture std_msgs/String "data: 'object1'"
+roslaunch pose_estimation spawn_ur5_moveit.launch
+rostopic pub /take_picture std_msgs/String "data: 'object1'"
 
+### Spawn object
 
-https://www.youtube.com/watch?v=O0aZ0XFEYbU&list=PLJOHOcnvyOr3OqdanYQZIf7Rnga3VLmJA&index=5
+- Object Handling:
+  rostopic pub spawn_trigger std_msgs/Empty "{}
+  rostopic echo /object_spawned
+  rostopic pubdelete_object your_package/DeleteObject "object_id: '1234-5678-90ab-cdef'"
+
+### Directory Structure
+
+/pose_estimation (main directory)
+../config
+../launch
+../maps
+../msg
+../src
+../urdf
+
+/robotiq_description (gripper directory)
+/u5_robot_moveit_config (moveit config directory)

@@ -11,7 +11,7 @@
     <!-- Include the table definition from another file -->
     <xacro:include filename="$(find pose_estimation)/urdf/table.urdf.xacro"/>
 
-    <xacro:include filename="$(find pose_estimation)/urdf/end_effector.xacro"/>
+    <!-- <xacro:include filename="$(find pose_estimation)/urdf/end_effector.xacro"/>-->
 
     <transmission name="shoulder_pan_trans">
         <type>transmission_interface/SimpleTransmission</type>

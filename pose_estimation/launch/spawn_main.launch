@@ -28,11 +28,14 @@
     <!-- Load the controllers-->
     <rosparam command="load" file="$(find pose_estimation)/config/ur5_controllers.yaml"/>
 
+
+
      <!-- Load the node controller manager-->
     <node name="controller_spawner" pkg="controller_manager" type="spawner"
             output="screen" respawn="false" ns="/ur5"
             args="joint_state_controller
                 eff_joint_traj_controller
+                gripper_controller
                 --timeout 60 ">
     </node>
 
@@ -41,8 +44,6 @@
             output="screen" respawn="false">
             <remap from="/joint_states" to="/ur5/joint_states"/>
     </node>
-
-
 
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />

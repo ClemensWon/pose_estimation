@@ -21,13 +21,10 @@
     </include>
 
     <!-- Spawn the robot using the package gazebo_ros-->
-    <node name="spawn_the_robot" pkg="gazebo_ros" type="spawn_model"  output="screen"
-            args="-urdf -param robot_description -model ur5_robot -x $(arg x) -y $(arg y) -z $(arg z)" />
-
+    <node name="spawn_the_robot" pkg="gazebo_ros" type="spawn_model"  output="screen" args="-urdf -param robot_description -model ur5 -x $(arg x) -y $(arg y) -z $(arg z)" />
 
     <!-- Load the controllers-->
     <rosparam command="load" file="$(find pose_estimation)/config/ur5_controllers.yaml"/>
-
 
 
      <!-- Load the node controller manager-->
@@ -45,10 +42,12 @@
             <remap from="/joint_states" to="/ur5/joint_states"/>
     </node>
 
-
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
     <remap from="/joint_states" to="/ur5/joint_states"/>
 
+
+
+    <!-- Run nodes with moveit -->
     <include file= "$(find moveitconfig)/launch/planning_context.launch" >
         <arg name="load_robot_description" value="false" />
     </include>
@@ -61,19 +60,27 @@
         <arg name="rviz_config" value="$(find moveitconfig)/launch/moveit.rviz" />
     </include>
 
-    <!-- Spawn the table in Gazebo -->
+
+    <!-- Spawn the table in Gazebo 
     <node name="spawn_the_table" pkg="gazebo_ros" type="spawn_model" output="screen"
           args="-urdf -param table_description -model my_table -x 1.3 -y 0 -z $(arg z)" />
-
+    -->
+    
     <!-- Spawn additional objects if any -->
     <group ns="spawn_objects">
         <rosparam file="$(find pose_estimation)/config/spawn_objects.yaml"/>
     </group>
     <node name="spawn_objects_node" pkg="pose_estimation" type="spawn_objects.py" output="screen"/>
     
-    <!-- Run moveit node -->
+    <!-- Scripts -->
+    <!-- Run move node -->
     <node name="ur5_robot_moveit" pkg="pose_estimation" type="moveit.py" output="screen" />
 
     <!-- Run camera snap node -->
     <node name="camera_snap" pkg="pose_estimation" type="camera_snap.py" output="screen" />
+
+    <!-- Open/Close Gripper  -->
+    <node name="gripper_move" pkg="pose_estimation" type="gripper.py" output="screen" />
+
+
 </launch>

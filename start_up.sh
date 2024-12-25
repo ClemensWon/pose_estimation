@@ -25,3 +25,30 @@ sudo apt-get install -y \
 
 # Confirm installation
 echo "Installation complete. All dependencies have been installed."
+
+# Clean the workspace
+echo "Cleaning the workspace..."
+rm -rf build devel
+
+# Build the workspace
+echo "Building the workspace with catkin_make..."
+catkin_make
+
+# Check if catkin_make was successful
+if [ $? -ne 0 ]; then
+    echo "Error: catkin_make failed. Please check the output for errors."
+    exit 1
+fi
+
+# Source the setup.bash file
+echo "Sourcing the workspace..."
+source devel/setup.bash
+
+# Confirm sourcing
+if [ $? -eq 0 ]; then
+    echo "Workspace built and sourced successfully."
+    echo "You can now run ROS nodes or launch files from this workspace."
+else
+    echo "Error: Failed to source the workspace. Please check for errors."
+    exit 1
+fi

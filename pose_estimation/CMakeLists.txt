@@ -17,14 +17,24 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf2_geometry_msgs
   tf2_ros
+  message_generation
 )
 
-find_package(message_generation REQUIRED)
-add_message_files(
-  FILES
-  ObjectSpawned.msg
-  DeleteObject.msg
+# find_package(message_generation REQUIRED)
+# add_message_files(
+#   FILES
+#   ObjectSpawned.msg
+#   DeleteObject.msg
+# )
+
+## Generate services in the 'srv' folder
+add_service_files(
+   FILES
+   SpawnObject.srv
+   DeleteObject.srv
+   MoveJoints.srv
 )
+
 generate_messages(
   DEPENDENCIES
   geometry_msgs

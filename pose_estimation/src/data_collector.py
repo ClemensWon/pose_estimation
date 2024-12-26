@@ -83,10 +83,29 @@ class DataCollector:
             json.dump(self.dataset, f, indent=4)
         rospy.loginfo(f"Dataset saved to {dataset_file}")
 
+    def save_transformation_data(self, image_name, object_id, spawn_msg):
+        data_entry = {
+            "image_name": image_name,
+            "object_id": object_id,
+            "object_type": spawn_msg.object_type,
+            "position": {
+                "x": spawn_msg.pose.position.x,
+                "y": spawn_msg.pose.position.y,
+                "z": spawn_msg.pose.position.z
+            },
+            "orientation": {
+                "x": spawn_msg.pose.orientation.x,
+                "y": spawn_msg.pose.orientation.y,
+                "z": spawn_msg.pose.orientation.z,
+                "w": spawn_msg.pose.orientation.w
+            }
+        }
+        self.dataset.append(data_entry)
+
     def run(self):
         try:
             rospy.loginfo("Starting data collection...")
-            for n in range(1):
+            for n in range(2):
                 # Spawn object
                 spawn_msg = self.spawn_object()
 
@@ -107,23 +126,7 @@ class DataCollector:
                     self.take_picture(image_name)
 
                     # Save data
-                    data_entry = {
-                        "image_name": image_name,
-                        "object_id": object_id,
-                        "object_type": spawn_msg.object_type,
-                        "position": {
-                            "x": spawn_msg.pose.position.x,
-                            "y": spawn_msg.pose.position.y,
-                            "z": spawn_msg.pose.position.z
-                        },
-                        "orientation": {
-                            "x": spawn_msg.pose.orientation.x,
-                            "y": spawn_msg.pose.orientation.y,
-                            "z": spawn_msg.pose.orientation.z,
-                            "w": spawn_msg.pose.orientation.w
-                        }
-                    }
-                    self.dataset.append(data_entry)
+                    self.save_transformation_data(image_name, object_id, spawn_msg)
 
                 # Delete the spawned object
                 self.delete_object(object_id)
@@ -133,6 +136,7 @@ class DataCollector:
             rospy.loginfo("Data collection complete.")
         except rospy.ROSInterruptException:
             rospy.loginfo("Interrupted before completion.")
+
 
 if __name__ == "__main__":
     collector = DataCollector()

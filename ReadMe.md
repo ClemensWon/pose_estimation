@@ -29,4 +29,9 @@ In folder /catkin_ws:
 - rostopic pub /take_picture std_msgs/String "data: 'object1'"
 
 
+### To run the data collector script
+In folder /catkin_ws:
+- roslaunch pose_estimation spawn_ur5_moveit.launch
+- rosrun pose_estimation data_collector.py
+
 https://www.youtube.com/watch?v=O0aZ0XFEYbU&list=PLJOHOcnvyOr3OqdanYQZIf7Rnga3VLmJA&index=5

@@ -31,40 +31,39 @@ class TriggeredImageSaver:
 
         rospy.loginfo(f"Images will be saved in: {self.save_folder}")
 
-        # Placeholder for the image subscriber
-        self.image_subscriber = None
+        # Store the latest image
+        self.latest_image = None
+
+        # Persistent subscriber to the image topic
+        self.image_subscriber = rospy.Subscriber(self.image_topic, Image, self.image_callback)
 
         # Subscribe to the trigger topic
         rospy.Subscriber('/take_picture', String, self.trigger_callback)
 
         rospy.loginfo("Node is ready. Waiting for image name messages on /take_picture.")
 
+    def image_callback(self, msg):
+        # Cache the latest image
+        try:
+            self.latest_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        except Exception as e:
+            rospy.logerr(f"Failed to process image: {str(e)}")
+
     def trigger_callback(self, msg):
         image_name = msg.data
         rospy.loginfo(f"Signal received to capture image with name: {image_name}")
 
-        # Subscribe to the image topic
-        self.image_subscriber = rospy.Subscriber(self.image_topic, Image, self.image_callback, callback_args=image_name)
+        # Check if an image is available
+        if self.latest_image is None:
+            rospy.logerr("No image received yet!")
+            return
 
-    def image_callback(self, msg, image_name):
-        try:
-            # Convert the ROS Image message to OpenCV format
-            cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        # Save the cached image
+        filename = f"{image_name}.jpg"
+        file_path = os.path.join(self.save_folder, filename)
+        cv2.imwrite(file_path, self.latest_image)
 
-            # Save the image with the name from the message
-            filename = f"{image_name}.jpg"
-            file_path = os.path.join(self.save_folder, filename)
-            cv2.imwrite(file_path, cv_image)
-
-            rospy.loginfo(f"Image saved successfully as {file_path}")
-
-            # Unsubscribe from the image topic after capturing the image
-            if self.image_subscriber:
-                self.image_subscriber.unregister()
-                self.image_subscriber = None
-                rospy.loginfo("Unsubscribed from the image topic.")
-        except Exception as e:
-            rospy.logerr(f"Failed to save image: {str(e)}")
+        rospy.loginfo(f"Image saved successfully as {file_path}")
 
 
 if __name__ == '__main__':

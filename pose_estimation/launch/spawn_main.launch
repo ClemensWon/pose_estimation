@@ -70,6 +70,11 @@
     </group>
     <node name="spawn_objects_node" pkg="pose_estimation" type="spawn_objects.py" output="screen"/>
     
+    <group ns="generate_dataset">
+        <rosparam file="$(find pose_estimation)/config/generate_dataset.yaml"/>
+    </group>
+    <node name="generate_dataset_node" pkg="pose_estimation" type="generate_dataset.py" output="screen"/>
+
     <!-- Run moveit node -->
     <node name="ur5_robot_moveit" pkg="pose_estimation" type="moveit.py" output="screen" />
 

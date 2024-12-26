@@ -9,7 +9,7 @@
   sudo apt-get install ros-noetic-joint-state-publisher-gui
 - In Folder /catkin_ws:
   catkin_make  
-   source devel/setup.bash
+  source devel/setup.bash
   roslaunch PoseEstimation spawn_ur5_cam.launch
 
 

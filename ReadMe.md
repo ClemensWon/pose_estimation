@@ -12,9 +12,9 @@
    source devel/setup.bash
   roslaunch PoseEstimation spawn_ur5_cam.launch
 - Object Handling:
-  rostopic pubspawn_trigger std_msgs/Empty "{}
+  rostopic pub spawn_trigger std_msgs/Empty "{}"
   rostopic echo /object_spawned
-  rostopic pubdelete_object your_package/DeleteObject "object_id: '1234-5678-90ab-cdef'"
+  rostopic pub delete_object your_package/DeleteObject "object_id: '1234-5678-90ab-cdef'"
 
 ### To test moveit
 In folder /catkin_ws:

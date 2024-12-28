@@ -6,6 +6,7 @@ import rospkg
 import random
 import os
 import uuid
+from tf.transformations import quaternion_from_euler
 from gazebo_msgs.srv import SpawnModel, DeleteModel
 from geometry_msgs.msg import Pose, Quaternion
 from pose_estimation.srv import SpawnObject, SpawnObjectResponse
@@ -75,10 +76,19 @@ class ObjectSpawner:
         pose.position.y = self.center_y + random.uniform(-self.y_length, self.y_length)
         pose.position.z = self.center_z
 
-        x_orientation = self.x_degree + random.uniform(-self.x_degree_range, self.x_degree_range)
-        y_orientation = self.y_degree + random.uniform(-self.y_degree_range, self.y_degree_range)
-        z_orientation = self.z_degree + random.uniform(-self.z_degree_range, self.z_degree_range)
-        pose.orientation = Quaternion(x_orientation, y_orientation, z_orientation, 1)
+        x_orientation = self.x_degree + random.uniform(0, self.x_degree_range)
+        y_orientation = self.y_degree + random.uniform(0, self.y_degree_range)
+        z_orientation = self.z_degree + random.uniform(0, self.z_degree_range)
+
+        
+            # Convert Euler angles to quaternion
+        q = quaternion_from_euler(x_orientation, y_orientation, z_orientation)
+
+        rospy.loginfo(f"x: {q[0]}, y: {q[1]}, z: {q[2]}, w: {q[3]}")
+        pose.orientation.x = q[0]
+        pose.orientation.y = q[1]
+        pose.orientation.z = q[2]
+        pose.orientation.w = q[3]
 
         object_type = random.choice(self.enabled_objects)
         object_urdf = self.get_object_urdf(object_type)

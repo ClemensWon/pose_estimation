@@ -2,19 +2,19 @@ number_of_objects: 1
 spawn_center:
   pos_x: 1.3
   pos_y: 0
-  pos_z: 0.6
+  pos_z: 0.55
 spawn_radius:
   x_length: 0.25
   y_length: 0.25
 orientation:
-  x_degree: 45
-  y_degree: 45
-  z_degree: 45
+  x_degree: 1.5708
+  y_degree: 0
+  z_degree: 0
 orientation_range:
   x_degree: 0
   y_degree: 0
-  z_degree: 0
+  z_degree: 3.14
 object_types:
-  cube: True
-  cylinders: False
+  cube: False
+  cylinders: True
   spheres: False

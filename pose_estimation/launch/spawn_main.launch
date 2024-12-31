@@ -82,5 +82,7 @@
     <!-- Open/Close Gripper  -->
     <node name="gripper_move" pkg="pose_estimation" type="gripper.py" output="screen" />
 
+    <!-- cartesian_control -->
+    <node name="cartesian_control" pkg="pose_estimation" type="cartesian_control.py" output="screen" />
 
 </launch>

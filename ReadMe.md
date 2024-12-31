@@ -47,6 +47,13 @@ In folder /catkin_ws:
   CLOSE:
   rosrun your_package_name gripper.py 0.75
 
+### Cartesian_control
+
+- Run the Script with Mandatory Coordinates (x, y, z):
+  rosrun your_package_name move_end_effector.py 0.4 0.2 0.3
+- Run the Script with Optional Orientation (roll, pitch, yaw):
+  rosrun your_package_name move_end_effector.py 0.4 0.2 0.3 0.0 1.57 0.0
+
 ### Snap a photo
 
 In folder /catkin_ws:

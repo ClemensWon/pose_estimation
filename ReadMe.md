@@ -32,6 +32,12 @@ OR AUTOMATIC
 
 ### Test moveit
 
+- roslaunch pose_estimation spawn_main.launch
+- send some position values to moveit node:
+  - rostopic pub /joint_values std_msgs/Float64MultiArray "data: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
+
+### Open Close Gripper
+
 In folder /catkin_ws:
 
 - roslaunch pose_estimation spawn_main.launch
@@ -39,13 +45,7 @@ In folder /catkin_ws:
   OPEN:
   rosrun your_package_name gripper.py 0.0
   CLOSE:
-  rosrun your_package_name gripper.py 0.8
-
-### Open Gripper / Close Gripper
-
-- roslaunch pose_estimation spawn_main.launch
-- send some position values to moveit node:
-  - rostopic pub /joint_values std_msgs/Float64MultiArray "data: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
+  rosrun your_package_name gripper.py 0.75
 
 ### Snap a photo
 

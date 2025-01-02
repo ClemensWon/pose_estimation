@@ -35,6 +35,7 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
+
   <!-- Make the table static so it doesn't fall in Gazebo -->
   <gazebo reference="object_table">
     <static>true</static>

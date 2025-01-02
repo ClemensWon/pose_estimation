@@ -3,19 +3,40 @@
 import sys
 import rospy
 import moveit_commander
-from std_msgs.msg import Float64MultiArray, String
+from std_msgs.msg import String
 from geometry_msgs.msg import Pose
 from tf.transformations import quaternion_from_euler
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
-def move_end_effector(x, y, z, roll=0.0, pitch=0.0, yaw=0.0):
+def move_gripper(position):
+    """
+    Sends a command to the gripper controller to move the gripper to a specific position.
+    :param position: Desired position of the gripper (float).
+    """
+    rospy.loginfo(f"Commanding gripper to position={position}")
+
+    trajectory_msg = JointTrajectory()
+    trajectory_msg.joint_names = ['robotiq_85_left_knuckle_joint']
+    
+    point = JointTrajectoryPoint()
+    point.positions = [position]  # e.g. 0.0 -> closed, 0.04 -> open
+    point.velocities = [0.0]
+    point.time_from_start = rospy.Duration(1.0)
+    trajectory_msg.points = [point]
+
+    gripper_pub.publish(trajectory_msg)
+    rospy.loginfo(f"Gripper command sent: {position}")
+
+
+def move_end_effector(x, y, z, roll=0.0, pitch=0.0, yaw=0.0, grip_pos=None):
     """
     Moves the robot's end effector to the specified position (x, y, z) and orientation (roll, pitch, yaw).
+    If grip_pos is given (float), then the gripper is moved after the arm motion finishes.
     """
-    global move_group
-    
     try:
-        rospy.loginfo("Moving end effector to: "
-                      f"pos=({x}, {y}, {z}), rpy=({roll}, {pitch}, {yaw})")
+        rospy.loginfo(
+            f"Moving end effector to: pos=({x}, {y}, {z}), rpy=({roll}, {pitch}, {yaw})"
+        )
 
         # Define the target pose
         pose_target = Pose()
@@ -30,7 +51,6 @@ def move_end_effector(x, y, z, roll=0.0, pitch=0.0, yaw=0.0):
         pose_target.orientation.z = q[2]
         pose_target.orientation.w = q[3]
 
-        # Send goal
         move_group.set_pose_target(pose_target)
         success = move_group.go(wait=True)
 
@@ -45,37 +65,19 @@ def move_end_effector(x, y, z, roll=0.0, pitch=0.0, yaw=0.0):
         move_group.stop()
         move_group.clear_pose_targets()
 
+        # If a gripper position is provided, move the gripper after the arm motion
+        if grip_pos is not None:
+            move_gripper(grip_pos)
+
     except Exception as e:
         rospy.logerr(f"Error moving end-effector: {e}")
         status_publisher.publish("Error")
 
 
-def move_end_effector_callback(msg):
-    """
-    Subscriber callback: Interprets Float64MultiArray as [x, y, z, (roll), (pitch), (yaw)]
-    and calls move_end_effector.
-    """
-    data = msg.data
-    num_vals = len(data)
-    if num_vals < 3:
-        rospy.logerr("Received less than 3 elements. Need at least x, y, z.")
-        return
-
-    x = data[0]
-    y = data[1]
-    z = data[2]
-    roll  = data[3] if num_vals >= 4 else 0.0
-    pitch = data[4] if num_vals >= 5 else 0.0
-    yaw   = data[5] if num_vals >= 6 else 0.0
-
-    rospy.loginfo(f"Subscriber callback received: {data}")
-    move_end_effector(x, y, z, roll, pitch, yaw)
-
-
 def main():
-    global move_group, status_publisher
+    global move_group, status_publisher, gripper_pub
 
-    # Initialize MoveIt commander and ROS node
+    # Initialize MoveIt Commander and ROS node
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node("move_end_effector", anonymous=True)
 
@@ -85,35 +87,31 @@ def main():
     # Publisher for movement status
     status_publisher = rospy.Publisher("/movement_status", String, queue_size=10)
 
-    # Subscriber for end-effector move commands (in Float64MultiArray form)
-    rospy.Subscriber("/joint_values", Float64MultiArray, move_end_effector_callback)
-
-    rospy.loginfo("move_end_effector node is up and listening to /joint_values. "
-                  "Also accepts command-line arguments for one-time motion.")
+    # Publisher for gripper commands
+    gripper_pub = rospy.Publisher("/ur5/gripper_controller/command", JointTrajectory, queue_size=10)
 
     # --- Command-line usage part ---
     # If user provided at least x, y, z
     if len(sys.argv) >= 4:
-        # Parse mandatory arguments
         x = float(sys.argv[1])
         y = float(sys.argv[2])
         z = float(sys.argv[3])
-
-        # Parse optional orientation arguments
         roll  = float(sys.argv[4]) if len(sys.argv) > 4 else 0.0
         pitch = float(sys.argv[5]) if len(sys.argv) > 5 else 0.0
         yaw   = float(sys.argv[6]) if len(sys.argv) > 6 else 0.0
+        # If the user provides a 7th argument for the gripper
+        grip_pos = float(sys.argv[7]) if len(sys.argv) > 7 else None
 
-        # Move once immediately
-        move_end_effector(x, y, z, roll, pitch, yaw)
+        move_end_effector(x, y, z, roll, pitch, yaw, grip_pos)
     else:
-        rospy.logwarn("No command-line position arguments given. "
-                      "Node will only respond to /joint_values subscriber.")
+        rospy.logerr("Usage: rosrun pose_estimation move_end_effector.py <x> <y> <z> [roll] [pitch] [yaw] [gripper_pos]")
+        rospy.logerr("Example: rosrun pose_estimation move_end_effector.py 0.4 0.2 0.3 0.0 0.0 0.0 0.04")
+        sys.exit(1)
 
-    # Keep node alive for subscriber callbacks
-    rospy.spin()
+    # Once done, we can exit immediately or keep spinning if desired.
+    # If you prefer to see logs or wait, uncomment the following line:
+    # rospy.spin()
 
-    # Clean shutdown
     moveit_commander.roscpp_shutdown()
 
 

@@ -52,3 +52,19 @@ else
     echo "Error: Failed to source the workspace. Please check for errors."
     exit 1
 fi
+
+# Mark all Python scripts under pose_estimation/src as executable
+echo "Marking all Python scripts in pose_estimation/src as executable..."
+PACKAGE_PATH="$(rospack find pose_estimation)"
+if [ -z "$PACKAGE_PATH" ]; then
+    echo "Error: Could not find the 'pose_estimation' package via rospack."
+    echo "Make sure the package is in your workspace and spelled correctly."
+    exit 1
+else
+    chmod +x "$PACKAGE_PATH/src/"*.py 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "All Python scripts in pose_estimation/src are now executable."
+    else
+        echo "No Python scripts found or an error occurred."
+    fi
+fi

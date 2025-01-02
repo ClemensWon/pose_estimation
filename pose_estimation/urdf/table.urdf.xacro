@@ -4,7 +4,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="1 1 0.05"/>
+        <box size="0.25 0.25 0.05"/> <!-- Reduced length and width, original height -->
       </geometry>
       <material name="brown">
         <color rgba="0.545 0.270 0.0745 1.0"/>
@@ -13,13 +13,13 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="1.5 1.5 0.05"/>
+        <box size="0.375 0.375 0.05"/> <!-- Reduced length and width, original height -->
       </geometry>
     </collision>
     <inertial>
-      <mass value="20.0"/>
+      <mass value="5.0"/> <!-- Reduced mass to reflect smaller volume -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+      <inertia ixx="0.25" iyy="0.25" izz="0.25" ixy="0" ixz="0" iyz="0"/> <!-- Adjusted inertia values -->
     </inertial>
   </link>
   <!-- Make it static so it doesn't fall -->

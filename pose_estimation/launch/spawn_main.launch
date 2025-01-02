@@ -83,8 +83,6 @@
     <!-- Run camera snap node -->
     <node name="camera_snap" pkg="pose_estimation" type="camera_snap.py" output="screen" />
 
-    <!-- Open/Close Gripper  -->
-    <node name="gripper_move" pkg="pose_estimation" type="gripper.py" output="screen" />
 
     <!-- cartesian_control -->
     <node name="move_end_effector" pkg="pose_estimation" type="move_end_effector.py" output="screen" />

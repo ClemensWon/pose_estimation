@@ -6,6 +6,6 @@ moveit_setup_assistant_config:
   SRDF:
     relative_path: config/ur5_robot.srdf
   CONFIG:
-    author_name: pose_estimation_team
-    author_email: pose_estimation_team@gmail.com
-    generated_timestamp: 1734204387
+    author_name: georgtalasz
+    author_email: georgtalasz@hotmail.com
+    generated_timestamp: 1735135647

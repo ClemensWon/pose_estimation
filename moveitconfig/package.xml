@@ -1,12 +1,12 @@
 <package>
 
-  <name>ur5_robot_moveit_config</name>
+  <name>moveitconfig</name>
   <version>0.3.0</version>
   <description>
      An automatically generated package with all the configuration and launch files for using the ur5_robot with the MoveIt Motion Planning Framework
   </description>
-  <author email="pose_estimation_team@gmail.com">pose_estimation_team</author>
-  <maintainer email="pose_estimation_team@gmail.com">pose_estimation_team</maintainer>
+  <author email="georgtalasz@hotmail.com">georgtalasz</author>
+  <maintainer email="georgtalasz@hotmail.com">georgtalasz</maintainer>
 
   <license>BSD</license>
 

@@ -49,3 +49,9 @@ ur5:
     stop_trajectory_duration: 0.5
     state_publish_rate: 25
     action_monitor_rate: 10
+
+  fake_gripper_controller:
+    type: position_controllers/JointTrajectoryController
+    joints:
+      - robotiq_85_left_finger_joint
+      - robotiq_85_right_finger_joint

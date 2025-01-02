@@ -9,7 +9,7 @@
     <!-- Set teh position in empty world-->
     <arg name="x" default="0" />
     <arg name="y" default="0" />
-    <arg name="z" default="0" />
+    <arg name="z" default="0.5" />
 
     <!-- Launch Gezabo world in paused-->
     <include file = "$(find gazebo_ros)/launch/empty_world.launch" >
@@ -51,6 +51,7 @@
 
 
 
+
     <include file= "$(find moveitconfig)/launch/planning_context.launch" >
         <arg name="load_robot_description" value="false" />
     </include>
@@ -66,7 +67,7 @@
 
     <!-- Spawn the table in Gazebo -->
     <node name="spawn_the_table" pkg="gazebo_ros" type="spawn_model" output="screen"
-          args="-urdf -param table_description -model my_table -x 0.7 -y 0 -z $(arg z)" />
+          args="-urdf -param table_description -model my_table -x 1.3 -y 0 -z $(arg z)" />
 
     <!-- Spawn additional objects if any -->
     <group ns="spawn_objects">

@@ -41,18 +41,46 @@ rostopic pub delete_object pose_estimation/DeleteObject "object_id: 'e3b235e0-1d
 
 #### Test moveit
 
-In folder /catkin_ws:
+### Test moveit
 
-- roslaunch pose_estimation spawn_ur5_moveit.launch
+- roslaunch pose_estimation spawn_main.launch
 - send some position values to moveit node:
   - rostopic pub /joint_values std_msgs/Float64MultiArray "data: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
 
-#### Snap a photo
+### Open Close Gripper
 
 In folder /catkin_ws:
 
-- roslaunch pose_estimation spawn_ur5_moveit.launch
-- rostopic pub /take_picture std_msgs/String "data: 'object1'"
+- roslaunch pose_estimation spawn_main.launch
+- send some position values to moveit node:
+  OPEN:
+  rosrun your_package_name gripper.py 0.0
+  CLOSE:
+  rosrun your_package_name gripper.py 0.75
+
+### Go and Grab
+
+In folder /catkin_ws:
+
+rosrun pose_estimation move_end_effector.py <x> <y> <z> [roll] [pitch] [yaw] [gripper_pos]
+
+<x>: Target X-coordinate (meters)
+<y>: Target Y-coordinate (meters)
+<z>: Target Z-coordinate (meters)
+[roll] (Optional): Roll angle in radians (default=0.0)
+[pitch] (Optional): Pitch angle in radians (default=0.0)
+[yaw] (Optional): Yaw angle in radians (default=0.0)
+[gripper_pos] (Optional): Gripper position (e.g., 0.0 = closed, 0.04 = open). If omitted, the gripper does not move.
+
+- With Orientation & Gripper Command
+  rosrun pose_estimation move_end_effector.py 0.4 0.2 0.3 0.0 1.57 0.0 0.0
+
+### Snap a photo
+
+In folder /catkin_ws:
+
+- roslaunch pose_estimation spawn_main.launch
+  rostopic pub /take_picture std_msgs/String "data: 'object1'"
 
 #### Collect Data
 

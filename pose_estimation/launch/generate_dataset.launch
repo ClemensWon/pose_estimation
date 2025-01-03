@@ -50,8 +50,6 @@
             args="-urdf -param robot_description -model ur5_robot -x $(arg x) -y $(arg y) -z $(arg z)" />
 
 
-
-
     <include file= "$(find moveitconfig)/launch/planning_context.launch" >
         <arg name="load_robot_description" value="false" />
     </include>

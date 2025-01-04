@@ -13,6 +13,10 @@ class JointMover:
 
         # Create a MoveGroupCommander for the manipulator
         self.move_group = moveit_commander.MoveGroupCommander("manipulator", wait_for_servers=30)
+        self.move_group.set_max_velocity_scaling_factor(1.0)
+        self.move_group.set_max_acceleration_scaling_factor(1.0)
+        self.move_group.set_planning_time(0.5)
+
 
         # Create the service
         self.service = rospy.Service('move_joints', MoveJoints, self.handle_move_joints)

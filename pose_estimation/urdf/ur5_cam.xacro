@@ -11,7 +11,7 @@
     <!-- Include the table definition from another file -->
     <xacro:include filename="$(find pose_estimation)/urdf/table.urdf.xacro"/>
 
-    <!-- <xacro:include filename="$(find pose_estimation)/urdf/end_effector.xacro"/>-->
+    <xacro:include filename="$(find pose_estimation)/urdf/end_effector.xacro"/>
 
     <transmission name="shoulder_pan_trans">
         <type>transmission_interface/SimpleTransmission</type>
@@ -107,8 +107,9 @@
     <joint name="world_table_fixed_joint" type="fixed">
         <parent link="world"/>
         <child link="table"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/> <!-- Adjust this to half the table thickness -->
     </joint>
+
     
     <!-- Now attach the robot to the table. -->
     <joint name="table_robot_fixed_joint" type="fixed">

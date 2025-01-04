@@ -282,6 +282,7 @@
         <axis xyz="0 0 1" />
         <limit effort="150.0" lower="-6.283185307179586" upper="6.283185307179586" velocity="3.141592653589793" />
         <dynamics damping="0" friction="0" />
+        
     </joint>
     <joint name="elbow_joint" type="revolute">
         <parent link="upper_arm_link" />

@@ -45,7 +45,7 @@ rostopic pub delete_object pose_estimation/DeleteObject "object_id: 'e3b235e0-1d
 
 - roslaunch pose_estimation spawn_main.launch
 - send some position values to moveit node:
-  - rostopic pub /joint_values std_msgs/Float64MultiArray "data: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
+- rosservice call move_joints "joint_values: [-0.2, -1.57, 0.8, 0.0, 0.0, 5]"
 
 ### Open Close Gripper
 

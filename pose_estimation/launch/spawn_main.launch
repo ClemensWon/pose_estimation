@@ -9,14 +9,14 @@
     <!-- Set teh position in empty world-->
     <arg name="x" default="0" />
     <arg name="y" default="0" />
-    <arg name="z" default="0.3" />
+    <arg name="z" default="0.5" />
 
     <!-- Launch Gezabo world in paused-->
     <include file = "$(find gazebo_ros)/launch/empty_world.launch" >
         <arg name="use_sim_time" value="true"/>
         <arg name="debug" value="false"/>
         <arg name="gui" value="true"/>
-        <arg name="paused" value="false" />
+        <arg name="paused" value="true" />
         <!--<arg name="world_name" value="$(arg world_file)"/>-->
     </include>
 
@@ -26,7 +26,6 @@
     <rosparam param="/ur5/eff_joint_traj_controller/initial_positions">
         [0.0, -1.57, 1.57, 0.0, 1.57, 0.0]
     </rosparam>
-
 
     <!-- Load the controllers-->
     <rosparam command="load" file="$(find pose_estimation)/config/ur5_controllers.yaml"/>
@@ -96,11 +95,11 @@
     <!-- Run camera snap node -->
     <node name="camera_snap" pkg="pose_estimation" type="camera_snap.py" output="screen" />
 
-    <!-- cartesian_control -->
+    <!-- cartesian_control 
     <node name="move_end_effector" pkg="pose_estimation" type="move_end_effector.py" output="screen" />
-
-    <!-- pick and place -->
+    -->
+    <!-- pick and place 
     <node name="pick_and_place" pkg="pose_estimation" type="pick_and_place.py" output="screen" />
-
+    -->
 
 </launch>

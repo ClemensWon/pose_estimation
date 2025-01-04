@@ -107,7 +107,7 @@
     <joint name="world_table_fixed_joint" type="fixed">
         <parent link="world"/>
         <child link="table"/>
-        <origin xyz="0 0 0.05" rpy="0 0 0"/> <!-- Adjust this to half the table thickness -->
+        <origin xyz="0 0 0" rpy="0 0 0"/> <!-- Adjust this to half the table thickness -->
     </joint>
 
     
@@ -120,7 +120,7 @@
              For a table thickness of 0.05 m, let's try xyz="0 0 0.025" or just 0.05 if flush.
              Adjust as needed based on how the meshes align.
         -->
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/>
     </joint>
 
     <link name="shoulder_link">

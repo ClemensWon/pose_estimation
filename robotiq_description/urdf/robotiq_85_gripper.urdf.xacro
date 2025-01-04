@@ -91,13 +91,13 @@
             </inertial>
         </link>
 
-        <joint name="${prefix}robotiq_85_left_finger_joint" type="fixed">
+        <joint name="${prefix}robotiq_85_left_finger_joint" type="continuous">
             <parent link="${prefix}robotiq_85_left_knuckle_link"/>
             <child link="${prefix}robotiq_85_left_finger_link"/>
             <origin xyz="-0.00408552455 -0.03148604435 0.0" rpy="0 0 0" />
         </joint>
 
-        <joint name="${prefix}robotiq_85_right_finger_joint" type="fixed">
+        <joint name="${prefix}robotiq_85_right_finger_joint" type="continuous">
             <parent link="${prefix}robotiq_85_right_knuckle_link"/>
             <child link="${prefix}robotiq_85_right_finger_link"/>
             <origin xyz="-0.00408552455 -0.03148604435 0.0" rpy="0 0 0" />

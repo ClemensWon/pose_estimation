@@ -27,6 +27,17 @@ sudo apt-get install -y \
 # Confirm installation
 echo "Installation complete. All dependencies have been installed."
 
+# Set permissions for GPU device files
+echo "Setting permissions for GPU device files..."
+sudo chmod a+rw /dev/dri/*
+
+if [ $? -eq 0 ]; then
+    echo "Permissions for /dev/dri/* set successfully."
+else
+    echo "Failed to set permissions for /dev/dri/*. Ensure this script is run as root or with sudo."
+    exit 1
+fi
+
 # Clean the workspace
 echo "Cleaning the workspace..."
 rm -rf build devel

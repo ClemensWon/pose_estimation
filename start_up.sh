@@ -17,6 +17,7 @@ sudo apt-get install -y \
     ros-noetic-gazebo-ros \
     ros-noetic-moveit \
     ros-noetic-tf-conversions \
+    ros-noetic-rqt-tf-tree \
     ros-noetic-gazebo-ros-pkgs \
     ros-noetic-gazebo-plugins \
     ros-noetic-ros-control \

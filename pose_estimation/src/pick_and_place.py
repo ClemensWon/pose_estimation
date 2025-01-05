@@ -13,7 +13,7 @@ import tf
 import tf.transformations as tft
 
 from std_srvs.srv import Empty
-from pose_estimation.srv import SpawnObject, GripperControl, MoveJoints, SaveImage
+from pose_estimation.srv import SpawnObject, GripperControl, MoveJoints, SaveImage, MoveToPose
 
 
 
@@ -109,11 +109,49 @@ class pick_and_place:
         self.current_image_name = image_name
         response = self.save_image_service(image_name)
         return response
+        
+    def move_to_object(self, data_entry):
+        """
+        Move the robot's tool0 to align with the object's pose based on the provided data entry.
+        """
+        rospy.loginfo(f"Moving to object with data entry: {data_entry}")
+        try:
+            # Extract the translation and rotation from the data entry
+            translation = data_entry["camera_to_object"]["translation"]
+            rotation = data_entry["camera_to_object"]["rotation"]
+            
+            # Extract additional metadata (optional, for logging/debugging)
+            image_name = data_entry["image_name"]
+            object_id = data_entry["object_id"]
+            object_type = data_entry["object_type"]
+
+            # Create a service proxy for the move_to_pose service
+            rospy.wait_for_service('move_to_pose')
+            move_to_pose_service = rospy.ServiceProxy('move_to_pose', MoveToPose)
+
+            # Call the service
+            response = move_to_pose_service(
+                translation=translation,
+                rotation=rotation,
+                image_name=image_name,
+                object_id=object_id,
+                object_type=object_type
+            )
+
+            if response.success:
+                rospy.loginfo("Successfully moved to the object!")
+            else:
+                rospy.logerr(f"Failed to move to the object: {response.message}")
+
+        except rospy.ServiceException as e:
+            rospy.logerr(f"Service call failed: {e}")
+
+    
 
     def run(self):
         try:
             rospy.loginfo("Starting pick-and-place operation...")
-
+            
             # 1) Spawn object
             spawn_response = self.spawn_object()
             if not spawn_response.success:
@@ -123,30 +161,38 @@ class pick_and_place:
             object_type = spawn_response.object_type
             rospy.loginfo(f"Spawned object with ID: {object_id}, type: {object_type}")
 
-            '''
-            # 2) Move robot to photo poses and take pictures
-            for i, pose in enumerate(self.robot_poses):
-                rospy.loginfo(f"Moving to pose {i+1} and taking picture.")
-                self.move_robot(self.robot_poses[0])
-                #rospy.sleep(2)
-                image_name = f"pickup_image_{i+1}"
-                self.take_picture(image_name)
-                rospy.sleep(2)
-            '''
             
             self.move_robot(self.robot_poses[0])
             #rospy.sleep(2)
+            '''
             image_name = f"pickup_image_{0}"
             self.take_picture(image_name)
 
 
-            rospy.sleep(2)
+            rospy.sleep(1)
             # 3) Move robot to pick pose
             rospy.loginfo("Moving to pick pose...")
             self.move_robot(self.robot_pick[0])
-            rospy.sleep(2)
+            rospy.sleep(1)
             # 4) Close the gripper to pick the object
             self.close_gripper()
+            '''
+            # Example data entry
+            data_entry = {
+                "image_name": "target_object",
+                "object_id": "123",  # Example object ID
+                "object_type": "target",  # Example object type
+                "camera_to_object": {
+                    "translation": [-0.19760395907289863, 0.4160319400437681, 0.03015402951701876],
+                    "rotation": [0.55344705424579, -0.5006017434978055, -0.3805581669868574, 0.5461407639914998]
+                }
+            }
+
+            # Call the move_to_object function with the data entry
+            rospy.sleep(2)  # Optional delay if needed for synchronization
+            self.move_to_object(data_entry)
+
+
 
             # 5) Move robot to place pose (optional)
             #rospy.loginfo("Moving to place pose...")

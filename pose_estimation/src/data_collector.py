@@ -166,7 +166,7 @@ class DataCollector:
             return None
 
 
-    # NEW: Method to retrieve the tool0 pose in the world frame using TF
+    # retrieve the tool0 pose in the world frame using TF
     def get_tool0_world_pose(self):
         """
         Look up the pose of 'tool0' relative to 'world' via TF.

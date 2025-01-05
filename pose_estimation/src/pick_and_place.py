@@ -167,8 +167,6 @@ class pick_and_place:
             '''
             image_name = f"pickup_image_{0}"
             self.take_picture(image_name)
-
-
             rospy.sleep(1)
             # 3) Move robot to pick pose
             rospy.loginfo("Moving to pick pose...")
@@ -183,16 +181,23 @@ class pick_and_place:
                 "object_id": "123",  # Example object ID
                 "object_type": "target",  # Example object type
                 "camera_to_object": {
-                    "translation": [-0.19760395907289863, 0.4160319400437681, 0.03015402951701876],
-                    "rotation": [0.55344705424579, -0.5006017434978055, -0.3805581669868574, 0.5461407639914998]
+                    "translation": [
+                1.326429036235808,
+                -0.30861911121918606,
+                -0.08593757955372483
+            ]   ,
+                    "rotation": [
+                0.2863415578104123,
+                -0.004779112799843402,
+                0.9580842983409861,
+                -0.007755618867172294
+                ]
                 }
             }
 
             # Call the move_to_object function with the data entry
             rospy.sleep(2)  # Optional delay if needed for synchronization
             self.move_to_object(data_entry)
-
-
 
             # 5) Move robot to place pose (optional)
             #rospy.loginfo("Moving to place pose...")

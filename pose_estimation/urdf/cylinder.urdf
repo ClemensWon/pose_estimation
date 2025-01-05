@@ -25,6 +25,7 @@
                 <body_name>cylinder_link</body_name>
                 <frameName>cylinder_link</frameName>
                 <yaw_offset>0.0</yaw_offset>
+                <publish_tf>true</publish_tf>        <!-- Add this -->
                 <pitch_offset>0.0</pitch_offset>
                 <roll_offset>0.0</roll_offset>
                 <xyz_offset>0 0 0</xyz_offset>
@@ -35,6 +36,7 @@
             </plugin>
         </gazebo>
     </link>
+    
 
     <gazebo reference="cylinder_link">
         <visual>

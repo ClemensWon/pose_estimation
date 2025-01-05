@@ -22,6 +22,7 @@ sudo apt-get install -y \
     ros-noetic-gazebo-plugins \
     ros-noetic-ros-control \
     ros-noetic-ros-controllers \
+    ros-noetic-tf2-tools \
     ros-noetic-controller-manager
 
 # Confirm installation

@@ -1,90 +1,156 @@
 #!/usr/bin/env python3
 
-import sys
+import os
+import json
+import time
+
 import rospy
-import moveit_commander
+import rospkg
+
 from geometry_msgs.msg import Pose
-from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from gazebo_msgs.srv import GetModelState
+import tf
+import tf.transformations as tft
 
-def move_gripper(gripper_pub, position):
-    """
-    Opens/closes the gripper by publishing a JointTrajectory.
-      position ~ 0.0 (closed) to about 0.04 (open)
-    """
-    rospy.loginfo(f"Gripper -> position = {position}")
+from std_srvs.srv import Empty
+from pose_estimation.srv import SpawnObject, GripperControl, MoveJoints, SaveImage
 
-    traj_msg = JointTrajectory()
-    traj_msg.joint_names = ['robotiq_85_left_knuckle_joint']
 
-    point = JointTrajectoryPoint()
-    point.positions = [position]
-    point.time_from_start = rospy.Duration(1.0)
 
-    traj_msg.points = [point]
-    gripper_pub.publish(traj_msg)
+class pick_and_place:
+    def __init__(self):
+        rospy.init_node("pick_and_place")
 
-def main():
-    if len(sys.argv) < 8:
-        rospy.logerr("Usage: rosrun pose_estimation move_ik.py x y z qx qy qz qw")
-        sys.exit(1)
+        # Read configuration for data generation
+        config = rospy.get_param('/pick_and_place')
+        self.robot_poses = config['photo']
+        self.robot_pick = config['pick']
 
-    # Parse command-line arguments
-    x  = float(sys.argv[1])
-    y  = float(sys.argv[2])
-    z  = float(sys.argv[3])
-    qx = float(sys.argv[4])
-    qy = float(sys.argv[5])
-    qz = float(sys.argv[6])
-    qw = float(sys.argv[7])
+        # Wait for Gazebo to unpause
+        rospy.wait_for_service('/gazebo/unpause_physics')
+        self.unpause = rospy.ServiceProxy('/gazebo/unpause_physics', Empty)
+        
+        time.sleep(5)
+        self.unpause()
 
-    # Initialize ROS and MoveIt
-    moveit_commander.roscpp_initialize(sys.argv)
-    rospy.init_node("move_ik_node", anonymous=True)
+        # Wait for required services
+        rospy.wait_for_service('spawn_object')
+        rospy.wait_for_service('move_joints')
+        rospy.wait_for_service('save_image')
 
-    # Create MoveGroup for the UR5 manipulator
-    move_group = moveit_commander.MoveGroupCommander("manipulator", wait_for_servers=30)
+        # Wait for /gazebo/get_model_state to retrieve object world pose
+        rospy.wait_for_service('/gazebo/get_model_state')
+        self.get_model_state = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
 
-    # Publisher for the gripper
-    gripper_pub = rospy.Publisher("/ur5/gripper_controller/command", JointTrajectory, queue_size=10)
+        # Create service proxies
+        self.spawn_service      = rospy.ServiceProxy('spawn_object', SpawnObject)
+        self.move_joints        = rospy.ServiceProxy('move_joints', MoveJoints)
+        self.save_image_service = rospy.ServiceProxy('save_image', SaveImage)
 
-    rospy.loginfo("Waiting a moment for the gripper topic to be ready...")
-    rospy.sleep(1.0)  # let publisher connect
+        # TF listener for tool0 -> world transform
+        self.tf_listener = tf.TransformListener()
 
-    # 1) Open the gripper (example: 0.04 rad or meters for open)
-    move_gripper(gripper_pub, position=0.04)
-    rospy.sleep(1.0)
+        # Get package path and set dataset folder
+        rospack = rospkg.RosPack()
+        package_name = rospy.get_param('~package_name', 'pose_estimation')
+        package_path = rospack.get_path(package_name)
+        self.dataset_folder = os.path.join(package_path, 'dataset')
+        os.makedirs(self.dataset_folder, exist_ok=True)
 
-    # 2) Set the target pose
-    target_pose = Pose()
-    target_pose.position.x = x
-    target_pose.position.y = y
-    target_pose.position.z = z
-    target_pose.orientation.x = qx
-    target_pose.orientation.y = qy
-    target_pose.orientation.z = qz
-    target_pose.orientation.w = qw
+        rospy.loginfo(f"Dataset will be saved in: {self.dataset_folder}")
 
-    move_group.set_pose_target(target_pose)
+        self.current_image_name = None
 
-    # 3) Plan and move
-    plan_success = move_group.go(wait=True)
-    move_group.stop()
-    move_group.clear_pose_targets()
 
-    if plan_success:
-        rospy.loginfo("Successfully moved to the target pose.")
-    else:
-        rospy.logerr("Failed to move to the target pose.")
-        moveit_commander.roscpp_shutdown()
-        rospy.signal_shutdown("Pose target unreachable.")
-        sys.exit(1)
+    def move_robot(self, target_pose):
+        rospy.loginfo(f"Moving robot to pose: {target_pose}")
+        response = self.move_joints(target_pose)
+        # Potentially check response for success/failure
 
-    # 4) Close the gripper (0.0 -> closed)
-    move_gripper(gripper_pub, position=0.0)
-    rospy.sleep(1.0)
 
-    rospy.loginfo("Done. Shutting down MoveIt.")
-    moveit_commander.roscpp_shutdown()
+    def spawn_object(self):
+        response = self.spawn_service()
+        if response.success:
+            rospy.loginfo(f"Spawned object with ID: {response.object_id}")
+            return response
+        else:
+            rospy.logerr(f"Failed to spawn object: {response.message}")
+            return None
+
+    def open_gripper(self):
+        rospy.loginfo("Opening the gripper...")
+        rospy.wait_for_service('gripper_control')
+        try:
+            gripper_control = rospy.ServiceProxy('gripper_control', GripperControl)
+            response = gripper_control(position=0.0)  # Open position
+            if response.success:
+                rospy.loginfo(f"Gripper opened successfully: {response.message}")
+            else:
+                rospy.logerr(f"Failed to open gripper: {response.message}")
+        except rospy.ServiceException as e:
+            rospy.logerr(f"Service call failed: {str(e)}")
+
+    def close_gripper(self):
+        rospy.loginfo("Closing the gripper...")
+        rospy.wait_for_service('gripper_control')
+        try:
+            gripper_control = rospy.ServiceProxy('gripper_control', GripperControl)
+            response = gripper_control(position=0.75)  # Closed position
+            if response.success:
+                rospy.loginfo(f"Gripper closed successfully: {response.message}")
+            else:
+                rospy.logerr(f"Failed to close gripper: {response.message}")
+        except rospy.ServiceException as e:
+            rospy.logerr(f"Service call failed: {str(e)}")
+
+
+    def take_picture(self, image_name):
+        rospy.loginfo(f"Capturing image: {image_name}")
+        self.current_image_name = image_name
+        response = self.save_image_service(image_name)
+        return response
+
+    def run(self):
+        try:
+            rospy.loginfo("Starting pick-and-place operation...")
+
+            # 1) Spawn object
+            spawn_response = self.spawn_object()
+            if not spawn_response.success:
+                rospy.logerr(f"Failed to spawn object: {spawn_response.message}")
+                return
+            object_id = spawn_response.object_id
+            object_type = spawn_response.object_type
+            rospy.loginfo(f"Spawned object with ID: {object_id}, type: {object_type}")
+
+            # 2) Move robot to photo poses and take pictures
+            for i, pose in enumerate(self.robot_poses):
+                rospy.loginfo(f"Moving to pose {i+1} and taking picture.")
+                self.move_robot(pose)
+                image_name = f"pickup_image_{i+1}"
+                self.take_picture(image_name)
+
+            # 3) Move robot to pick pose
+            rospy.loginfo("Moving to pick pose...")
+            self.move_robot(self.robot_pick[0])
+
+            # 4) Close the gripper to pick the object
+            self.close_gripper()
+
+            # 5) Move robot to place pose (optional)
+            rospy.loginfo("Moving to place pose...")
+            self.move_robot(self.robot_pick[1])  # Assuming the second pose is for placing
+
+            # 6) Open the gripper to release the object
+            self.open_gripper()
+
+            rospy.loginfo("Pick-and-place operation complete.")
+
+        except rospy.ROSInterruptException:
+            rospy.loginfo("Operation interrupted before completion.")
+
+
 
 if __name__ == "__main__":
-    main()
+    collector = pick_and_place()
+    collector.run()

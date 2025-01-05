@@ -123,26 +123,37 @@ class pick_and_place:
             object_type = spawn_response.object_type
             rospy.loginfo(f"Spawned object with ID: {object_id}, type: {object_type}")
 
+            '''
             # 2) Move robot to photo poses and take pictures
             for i, pose in enumerate(self.robot_poses):
                 rospy.loginfo(f"Moving to pose {i+1} and taking picture.")
-                self.move_robot(pose)
+                self.move_robot(self.robot_poses[0])
+                #rospy.sleep(2)
                 image_name = f"pickup_image_{i+1}"
                 self.take_picture(image_name)
+                rospy.sleep(2)
+            '''
+            
+            self.move_robot(self.robot_poses[0])
+            #rospy.sleep(2)
+            image_name = f"pickup_image_{0}"
+            self.take_picture(image_name)
 
+
+            rospy.sleep(2)
             # 3) Move robot to pick pose
             rospy.loginfo("Moving to pick pose...")
             self.move_robot(self.robot_pick[0])
-
+            rospy.sleep(2)
             # 4) Close the gripper to pick the object
             self.close_gripper()
 
             # 5) Move robot to place pose (optional)
-            rospy.loginfo("Moving to place pose...")
-            self.move_robot(self.robot_pick[1])  # Assuming the second pose is for placing
+            #rospy.loginfo("Moving to place pose...")
+            #self.move_robot(self.robot_pick[1])  # Assuming the second pose is for placing
 
             # 6) Open the gripper to release the object
-            self.open_gripper()
+            #self.open_gripper()
 
             rospy.loginfo("Pick-and-place operation complete.")
 

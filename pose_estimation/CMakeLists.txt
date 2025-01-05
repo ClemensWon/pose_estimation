@@ -29,6 +29,7 @@ add_service_files(
    SaveImage.srv
    GripperControl.srv
    MoveToPose.srv
+   MoveToPosition.srv
 )
 
 generate_messages(

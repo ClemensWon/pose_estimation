@@ -2,13 +2,13 @@
 
 import rospy
 import rospkg
-
 import random
 import os
 import uuid
 from tf.transformations import quaternion_from_euler
-from gazebo_msgs.srv import SpawnModel, DeleteModel
-from geometry_msgs.msg import Pose, Quaternion
+from tf import TransformBroadcaster
+from gazebo_msgs.srv import SpawnModel, DeleteModel, GetModelState
+from geometry_msgs.msg import Pose
 from pose_estimation.srv import SpawnObject, SpawnObjectResponse
 from pose_estimation.srv import DeleteObject, DeleteObjectResponse
 
@@ -51,12 +51,21 @@ class ObjectSpawner:
 
         rospy.wait_for_service('gazebo/spawn_urdf_model')
         rospy.wait_for_service('gazebo/delete_model')
+        rospy.wait_for_service('/gazebo/get_model_state')
+
         self.spawn_model = rospy.ServiceProxy('gazebo/spawn_urdf_model', SpawnModel)
         self.delete_model = rospy.ServiceProxy('gazebo/delete_model', DeleteModel)
+        self.get_model_state = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
+
+        # TF broadcaster
+        self.tf_broadcaster = TransformBroadcaster()
 
         # Services
         self.spawn_service = rospy.Service('spawn_object', SpawnObject, self.handle_spawn_request)
         self.delete_service = rospy.Service('delete_object', DeleteObject, self.handle_delete_request)
+
+        # Start publishing TF
+        rospy.Timer(rospy.Duration(0.1), self.publish_tf_transforms)  # 10 Hz
 
     def get_object_urdf(self, object_type):
         package_path = rospkg.RosPack().get_path('pose_estimation')
@@ -80,11 +89,8 @@ class ObjectSpawner:
         y_orientation = self.y_degree + random.uniform(0, self.y_degree_range)
         z_orientation = self.z_degree + random.uniform(0, self.z_degree_range)
 
-        
-            # Convert Euler angles to quaternion
+        # Convert Euler angles to quaternion
         q = quaternion_from_euler(x_orientation, y_orientation, z_orientation)
-
-        rospy.loginfo(f"x: {q[0]}, y: {q[1]}, z: {q[2]}, w: {q[3]}")
         pose.orientation.x = q[0]
         pose.orientation.y = q[1]
         pose.orientation.z = q[2]
@@ -109,6 +115,29 @@ class ObjectSpawner:
         except rospy.ServiceException as e:
             rospy.logerr(f"Spawn service call failed: {e}")
             return None, None, None, False, str(e)
+
+    def publish_tf_transforms(self, event):
+        """Publish TF transforms for all spawned objects"""
+        for object_id, object_name in self.spawned_objects.items():
+            try:
+                # Get the object's pose from Gazebo
+                response = self.get_model_state(object_name, "world")
+                if response.success:
+                    position = response.pose.position
+                    orientation = response.pose.orientation
+
+                    # Publish the transform
+                    self.tf_broadcaster.sendTransform(
+                        (position.x, position.y, position.z),
+                        (orientation.x, orientation.y, orientation.z, orientation.w),
+                        rospy.Time.now(),
+                        object_name,  # Child frame ID
+                        "world"       # Parent frame ID
+                    )
+                else:
+                    rospy.logwarn(f"Failed to get state for {object_name}: {response.status_message}")
+            except rospy.ServiceException as e:
+                rospy.logerr(f"Service call to get_model_state failed: {e}")
 
     def handle_spawn_request(self, req):
         """Service handler for spawn requests"""

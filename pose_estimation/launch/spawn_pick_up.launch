@@ -79,6 +79,8 @@
     <!-- Run gripper node -->
     <node name="gripper_command" pkg="pose_estimation" type="gripper_service.py" output="screen" />
 
+    <!-- move to pose-->
+    <node name="move_to_pose" pkg="pose_estimation" type="move_to_pose.py" output="screen" />
 
 
 </launch>

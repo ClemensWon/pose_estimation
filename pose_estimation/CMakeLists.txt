@@ -30,6 +30,7 @@ add_service_files(
    GripperControl.srv
    MoveToPose.srv
    MoveToCoordinate.srv
+   MoveSingleJoint.srv
 )
 
 generate_messages(

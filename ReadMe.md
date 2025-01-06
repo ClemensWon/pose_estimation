@@ -37,15 +37,15 @@ rostopic pub spawn_trigger std_msgs/Empty "{}"
 rostopic echo /object_spawned
 rostopic pub delete_object pose_estimation/DeleteObject "object_id: 'e3b235e0-1d86-4aa9-b603-d40115f3e2e8'"
 
-#### Test moveit
+### Services
 
-### Test moveit
+#### Test moveit
 
 - roslaunch pose_estimation spawn_main.launch
 - send some position values to moveit node:
 - rosservice call /move_joints "joint_values: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
 
-### Open Close Gripper
+#### Open Close Gripper
 
 In folder /catkin_ws:
 
@@ -56,15 +56,30 @@ In folder /catkin_ws:
   CLOSE:
   rosrun pose_estimation gripper.py 0.75
 
-### Snap a photo
+#### Snap a photo
 
 In folder /catkin_ws:
 
 - roslaunch pose_estimation spawn_main.launch
   rostopic pub /take_picture std_msgs/String "data: 'object1'"
 
+#### Move to coordinates
+
+In folder /catkin_ws:
+
+- roslaunch pose_estimation spawn_main.launch
+  rostopic pub /take_picture std_msgs/String "data: 'object1'"
+
+### Actions
+
 #### Data Generation
 
 In folder /catkin_ws:
 
 - roslaunch pose_estimation generate_dataset.launch
+
+#### Pick and place
+
+In folder /catkin_ws:
+
+- roslaunch pose_estimation spawn_pick_up.launch

@@ -84,6 +84,6 @@
 
     <!-- move single joing
     <node name="move_single_joint" pkg="pose_estimation" type="move_single_joint.py" output="screen" />
-    -->
+     -->
 
 </launch>

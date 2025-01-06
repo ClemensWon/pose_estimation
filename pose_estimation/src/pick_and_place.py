@@ -215,6 +215,7 @@ class PickAndPlace:
 
             # ------------------------------------------------------------------
             # Example data entry "camera_to_object" 
+            # WORKS ONLY FOR POSE 1
             # ------------------------------------------------------------------
             data_entry = {
                 "image_name": "target_object",
@@ -222,15 +223,15 @@ class PickAndPlace:
                 "object_type": "target",
                 "camera_to_object": {
                     "translation": [
-                0.4991405095578209,
-                0.4943238733080873,
-                0.259124110000281
+                0.4009228606070063,
+                -0.3113902316316701,
+                -0.16934175542349666
             ],
                     "rotation":    [
-                0.12452895430592856,
-                0.3442136873936948,
-                0.425684412265957,
-                0.8275277989917285
+                0.13018466714271343,
+                -0.08036660950506594,
+                0.8425247327048309,
+                0.5164738476421187
             ]
                 }
             }
@@ -250,7 +251,7 @@ class PickAndPlace:
             target_coordinate = Pose()
             target_coordinate.position.x = world_obj_translation[0]
             target_coordinate.position.y = world_obj_translation[1]
-            target_coordinate.position.z = world_obj_translation[2] + 0.15 #offset
+            target_coordinate.position.z = world_obj_translation[2] 
             #target_coordinate.orientation.x = world_obj_rotation[0]
             #target_coordinate.orientation.y = world_obj_rotation[1]
             #target_coordinate.orientation.z = world_obj_rotation[2]

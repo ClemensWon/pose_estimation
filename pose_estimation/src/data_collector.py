@@ -264,7 +264,7 @@ class DataCollector:
             rospy.loginfo("Starting data collection...")
 
             for n in range(self.iterations):
-                # 1) Spawn object
+                #Spawn object
                 spawn_msg = self.spawn_object()
                 if spawn_msg is None:
                     continue
@@ -272,21 +272,21 @@ class DataCollector:
                 object_id   = spawn_msg.object_id
                 object_type = spawn_msg.object_type
 
-                # 2) For each robot pose, move, take picture, save transform
+                # For each robot pose, move, take picture, save transform
                 for i, pose in enumerate(self.robot_poses):
                     rospy.loginfo(f"Data collection cycle {i+1} for iteration {n}")
 
-                    # a) Move robot
+                    # Move robot
                     self.move_robot(pose)
 
-                    # b) Take image
+                    # Take image
                     image_name = f"image_{n}_pose{i+1}"
                     self.take_picture(image_name)
 
-                    # c) Save camera->object transform
+                    # Save camera->object transform
                     self.save_transformation_data(image_name, object_id, object_type)
 
-                # 3) Delete the spawned object
+                # Delete the spawned object
                 self.delete_object(object_id)
 
             rospy.loginfo("Data collection complete.")

@@ -1,5 +1,7 @@
 ## Project 5
 
+### Authors
+
 ### Pose Estimation
 
 #### Directory
@@ -43,7 +45,7 @@ rostopic pub delete_object pose_estimation/DeleteObject "object_id: 'e3b235e0-1d
 
 - roslaunch pose_estimation spawn_main.launch
 - send some position values to moveit node:
-- rosservice call /move_joints "joint_values: [0.0, -1.57, 0.0, 0.0, 0.0, 1.57]"
+- rosservice call /move_joints "joint_values: [-0.2, -1.57, 0.0, 0.0, 0.0, -0.6]"
 
 #### Open Close Gripper
 
@@ -67,8 +69,17 @@ In folder /catkin_ws:
 
 In folder /catkin_ws:
 
-- roslaunch pose_estimation spawn_main.launch
-  rostopic pub /take_picture std_msgs/String "data: 'object1'"
+- roslaunch pose_estimation spawn_pick_up.launch
+  rosservice call /move_to_coordinate "target_coordinate:
+  position:
+  x: 0.5
+  y: 0.2
+  z: 0.3
+  orientation:
+  x: 0.0
+  y: 0.707
+  z: 0.0
+  w: 0.707"
 
 ### Actions
 

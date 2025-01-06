@@ -197,22 +197,34 @@ class PickAndPlace:
     def run(self):
         try:
             rospy.loginfo("Starting pick-and-place operation...")
+            rospy.sleep(1)
             
             # (A) Move to an initial "home" or "photo" pose
+            rospy.loginfo("Moving to initial pose...")
             self.move_robot(self.robot_poses[0])
+
+            
             rospy.sleep(2)
             
             # (B) Spawn object in the scene
+            rospy.loginfo("Spawning object...")
             spawn_response = self.spawn_object()
-            if not spawn_response or not spawn_response.success:
-                rospy.logerr(f"Failed to spawn object: {spawn_response.message if spawn_response else 'No response'}")
-                return
+
+        
+        
             object_id = spawn_response.object_id
             object_type = spawn_response.object_type
             rospy.loginfo(f"Spawned object with ID: {object_id}, type: {object_type}")
 
-            rospy.sleep(2)
+            rospy.sleep(1)
 
+            # (C) Take a picture of the spawned object
+            rospy.loginfo("Taking picture of spawned object...")
+            if not self.take_picture('spawned_object'):
+                rospy.logerr("Failed to take a picture of the spawned object. Aborting...")
+                return
+
+            rospy.sleep(1)
             # ------------------------------------------------------------------
             # Example data entry "camera_to_object" 
             # WORKS ONLY FOR POSE 1
@@ -223,49 +235,60 @@ class PickAndPlace:
                 "object_type": "target",
                 "camera_to_object": {
                     "translation": [
-                0.4009228606070063,
-                -0.3113902316316701,
-                -0.16934175542349666
-            ],
-                    "rotation":    [
-                0.13018466714271343,
-                -0.08036660950506594,
-                0.8425247327048309,
-                0.5164738476421187
-            ]
+                        0.3186100257392126,
+                        -0.15026389618409064,
+                        -0.005904878465301938
+                    ],
+                    "rotation": [
+                        0.3231523856786325,
+                        -0.19863675699689778,
+                        0.7887532332152162,
+                        0.48371924862724475
+                    ]
                 }
             }
             
 
-            # Calculate the world->object transform
+            # (D) Calculate the world->object transform
+            rospy.loginfo("Calculating world->object transform...")
             T_w_obj = self.calculate_world_to_object_transform(data_entry)
             if T_w_obj is None:
+                rospy.logerr("Failed to calculate world->object transform. Aborting...")
                 return
-
+            
+            
             # Extract final position/orientation
             world_obj_translation, world_obj_rotation = from_homogeneous(T_w_obj)
-            rospy.loginfo(f"Final object coordinates in world frame: x={world_obj_translation[0]:.4f}, y={world_obj_translation[1]:.4f}, z={world_obj_translation[2]:.4f}")
+            rospy.loginfo(f"\nFinal object coordinates in world frame:\n x={world_obj_translation[0]:.4f}, y={world_obj_translation[1]:.4f}, z={world_obj_translation[2]:.4f}")
+
+            rospy.sleep(2)
+
+            
+            #self.move_robot(self.robot_pick[2])
+            
+            #rospy.sleep(2)
 
 
-            # Fill geometry_msgs/Pose
+            # (F) Move to the object position
+            rospy.loginfo("Moving to the object position...")
             target_coordinate = Pose()
             target_coordinate.position.x = world_obj_translation[0]
             target_coordinate.position.y = world_obj_translation[1]
-            target_coordinate.position.z = world_obj_translation[2] 
+            target_coordinate.position.z = world_obj_translation[2] - 0.25
             #target_coordinate.orientation.x = world_obj_rotation[0]
             #target_coordinate.orientation.y = world_obj_rotation[1]
             #target_coordinate.orientation.z = world_obj_rotation[2]
             #target_coordinate.orientation.w = world_obj_rotation[3]
             target_coordinate.orientation.x = 0.0
-            target_coordinate.orientation.y = 1.0
+            target_coordinate.orientation.y = 0.0
             target_coordinate.orientation.z = 0.0
             target_coordinate.orientation.w = 0.0
 
-            rospy.sleep(2)
             # Move the robot to this object pose
             self.move_robot_to_coordinate(target_coordinate)
 
-            rospy.sleep(2)  # Optional delay if needed
+
+            rospy.sleep(4)  
 
             self.close_gripper()
 

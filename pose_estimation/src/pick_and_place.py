@@ -250,7 +250,7 @@ class PickAndPlace:
             target_coordinate = Pose()
             target_coordinate.position.x = world_obj_translation[0]
             target_coordinate.position.y = world_obj_translation[1]
-            target_coordinate.position.z = world_obj_translation[2] #because the table is 0.5 high
+            target_coordinate.position.z = world_obj_translation[2] + 0.15 #offset
             #target_coordinate.orientation.x = world_obj_rotation[0]
             #target_coordinate.orientation.y = world_obj_rotation[1]
             #target_coordinate.orientation.z = world_obj_rotation[2]

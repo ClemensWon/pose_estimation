@@ -14,7 +14,7 @@ import tf
 import tf.transformations as tft
 
 from std_srvs.srv import Empty
-from pose_estimation.srv import SpawnObject, GripperControl, MoveJoints, SaveImage, MoveToCoordinate
+from pose_estimation.srv import SpawnObject, GripperControl, MoveJoints, SaveImage, MoveToCoordinate, MoveSingleJoint
 
 def to_homogeneous(translation, rotation):
     """
@@ -60,6 +60,7 @@ class PickAndPlace:
         rospy.wait_for_service('move_joints')
         rospy.wait_for_service('save_image')
         rospy.wait_for_service('move_to_coordinate')
+        #rospy.wait_for_service('move_single_joint')
         
         # Wait for /gazebo/get_model_state to retrieve object world pose
         rospy.wait_for_service('/gazebo/get_model_state')
@@ -70,6 +71,7 @@ class PickAndPlace:
         self.move_joints        = rospy.ServiceProxy('move_joints', MoveJoints)
         self.save_image_service = rospy.ServiceProxy('save_image', SaveImage)
         self.move_to_coordinate = rospy.ServiceProxy('move_to_coordinate', MoveToCoordinate)
+        #self.move_single_joint = rospy.ServiceProxy('move_single_joint', MoveSingleJoint)
         
         # TF listener for tool0 -> world transform
         self.tf_listener = tf.TransformListener()
@@ -134,7 +136,21 @@ class PickAndPlace:
     def move_robot_to_coordinate(self, target_coordinate):
         rospy.loginfo(f"Moving robot to coordinate: {target_coordinate}")
         response = self.move_to_coordinate(target_coordinate)
-
+    '''
+    def move_single_joint(self, joint_index, joint_value):
+        """
+        Calls the move_single_joint service to move a specific joint.
+        """
+        try:
+            rospy.loginfo(f"Requesting to move joint {joint_index} to {joint_value} radians.")
+            response = self.move_single_joint(joint_index, joint_value)
+            if response.success:
+                rospy.loginfo(response.message)
+            else:
+                rospy.logerr(response.message)
+        except rospy.ServiceException as e:
+            rospy.logerr(f"Service call failed: {str(e)}")
+    '''
     def get_tool0_world_pose(self):
         """
         Look up the pose of 'tool0' relative to 'world' via TF.
@@ -274,7 +290,7 @@ class PickAndPlace:
             target_coordinate = Pose()
             target_coordinate.position.x = world_obj_translation[0]
             target_coordinate.position.y = world_obj_translation[1]
-            target_coordinate.position.z = world_obj_translation[2] - 0.25
+            target_coordinate.position.z = world_obj_translation[2] - 0.3
             #target_coordinate.orientation.x = world_obj_rotation[0]
             #target_coordinate.orientation.y = world_obj_rotation[1]
             #target_coordinate.orientation.z = world_obj_rotation[2]
@@ -287,7 +303,12 @@ class PickAndPlace:
             # Move the robot to this object pose
             self.move_robot_to_coordinate(target_coordinate)
 
-
+            '''
+            # Move the 4th joint to a desired value (e.g., 45 degrees in radians)
+            joint_index = 3  # Joint index starts at 0, so joint 4 has index 3
+            joint_value = 0.785  # 45 degrees in radians
+            self.move_single_joint(joint_index, joint_value)
+            '''
             rospy.sleep(4)  
 
             self.close_gripper()

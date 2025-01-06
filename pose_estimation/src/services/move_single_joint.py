@@ -9,7 +9,7 @@ class SingleJointMover:
     def __init__(self):
         # Initialize MoveIt and the ROS node
         moveit_commander.roscpp_initialize(sys.argv)
-        rospy.init_node("single_joint_mover_service", anonymous=True)
+        rospy.init_node("move_single_joint", anonymous=True)
 
         # Create a MoveGroupCommander for the manipulator
         self.move_group = moveit_commander.MoveGroupCommander("manipulator", wait_for_servers=30)
@@ -35,6 +35,9 @@ class SingleJointMover:
             rospy.logerr(f"Invalid joint index: {joint_index}. Must be in range [0, {len(joint_values)-1}].")
             return False, f"Invalid joint index: {joint_index}"
 
+        # Check joint limits (optional)
+        rospy.loginfo(f"Setting joint {joint_index} to {joint_value:.4f} radians.")
+        
         # Set the specific joint value
         joint_values[joint_index] = joint_value
         self.move_group.set_joint_value_target(joint_values)
@@ -42,11 +45,12 @@ class SingleJointMover:
         # Plan and execute
         success = self.move_group.go(wait=True)
         if success:
-            rospy.loginfo(f"Successfully moved joint {joint_index} to {joint_value}.")
-            return True, f"Successfully moved joint {joint_index} to {joint_value}"
+            rospy.loginfo(f"Successfully moved joint {joint_index} to {joint_value:.4f}.")
+            return True, f"Successfully moved joint {joint_index} to {joint_value:.4f}"
         else:
-            rospy.logerr(f"Failed to move joint {joint_index} to {joint_value}.")
-            return False, f"Failed to move joint {joint_index} to {joint_value}"
+            rospy.logerr(f"Failed to move joint {joint_index} to {joint_value:.4f}.")
+            return False, f"Failed to move joint {joint_index} to {joint_value:.4f}"
+
 
     def handle_move_single_joint(self, req):
         """

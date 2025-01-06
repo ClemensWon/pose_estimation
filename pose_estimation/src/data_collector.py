@@ -152,7 +152,7 @@ class DataCollector:
         rospy.loginfo(f"Dataset saved to {dataset_file}")
 
 
-    # retrieve the object's pose in the world frame using /gazebo/get_model_state
+    # retrieve object's pose in the world frame using /gazebo/get_model_state
     def get_object_world_pose(self, model_name):
         """
         Get the Pose of a spawned model in the 'world' frame from Gazebo.
@@ -160,13 +160,24 @@ class DataCollector:
         """
         try:
             resp = self.get_model_state(model_name, 'world')
-            return resp.pose
+
+            if resp.success:
+                # Log the coordinates of the object
+                position = resp.pose.position
+                orientation = resp.pose.orientation
+                rospy.loginfo(f"Object {model_name} Position: x={position.x}, y={position.y}, z={position.z}")
+                rospy.loginfo(f"Object {model_name} Orientation: x={orientation.x}, y={orientation.y}, z={orientation.z}, w={orientation.w}")
+
+                return resp.pose
+            else:
+                rospy.logerr(f"Failed to get state for {model_name}: {resp.status_message}")
+                return None
         except rospy.ServiceException as e:
             rospy.logerr(f"Service call /gazebo/get_model_state failed for {model_name}: {e}")
             return None
 
 
-    # retrieve the tool0 pose in the world frame using TF
+    # retrieve tool0 pose in the world frame using TF
     def get_tool0_world_pose(self):
         """
         Look up the pose of 'tool0' relative to 'world' via TF.
@@ -184,6 +195,13 @@ class DataCollector:
             pose.orientation.y = rot[1]
             pose.orientation.z = rot[2]
             pose.orientation.w = rot[3]
+            
+            # Log tool0 position and orientation
+            rospy.loginfo(f"Tool0 Position: x={pose.position.x}, y={pose.position.y}, z={pose.position.z}")
+            rospy.loginfo(f"Tool0 Orientation: x={pose.orientation.x}, y={pose.orientation.y}, z={pose.orientation.z}, w={pose.orientation.w}")
+
+                
+            
             return pose
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
             rospy.logwarn(f"Could not find transform world->tool0: {e}")
@@ -246,7 +264,7 @@ class DataCollector:
             rospy.loginfo("Starting data collection...")
 
             for n in range(self.iterations):
-                # 1) Spawn object
+                #Spawn object
                 spawn_msg = self.spawn_object()
                 if spawn_msg is None:
                     continue
@@ -254,21 +272,21 @@ class DataCollector:
                 object_id   = spawn_msg.object_id
                 object_type = spawn_msg.object_type
 
-                # 2) For each robot pose, move, take picture, save transform
+                # For each robot pose, move, take picture, save transform
                 for i, pose in enumerate(self.robot_poses):
                     rospy.loginfo(f"Data collection cycle {i+1} for iteration {n}")
 
-                    # a) Move robot
+                    # Move robot
                     self.move_robot(pose)
 
-                    # b) Take image
+                    # Take image
                     image_name = f"image_{n}_pose{i+1}"
                     self.take_picture(image_name)
 
-                    # c) Save camera->object transform
+                    # Save camera->object transform
                     self.save_transformation_data(image_name, object_id, object_type)
 
-                # 3) Delete the spawned object
+                # Delete the spawned object
                 self.delete_object(object_id)
 
             rospy.loginfo("Data collection complete.")

@@ -1,11 +1,8 @@
-# Input: Translation (position) and Rotation (orientation)
-float64[3] translation  # [x, y, z]
-float64[4] rotation     # [x, y, z, w]
-string image_name       # Optional: Name of the image (for logging)
-string object_id        # Optional: Object ID (for logging)
-string object_type      # Optional: Object type (for logging)
-
+geometry_msgs/Vector3 translation
+geometry_msgs/Quaternion rotation
+string image_name
+string object_id
+string object_type
 ---
-# Output: Success status and a message
 bool success
 string message

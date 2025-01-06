@@ -1,0 +1,6 @@
+# MoveToCoordinate.srv
+
+geometry_msgs/Pose target_coordinate
+---
+bool success
+string message

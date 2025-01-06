@@ -79,6 +79,11 @@
     <!-- Run gripper node -->
     <node name="gripper_command" pkg="pose_estimation" type="gripper_service.py" output="screen" />
 
+    <!-- move to coordinate-->
+    <node name="move_to_coordinate" pkg="pose_estimation" type="move_to_coordinate.py" output="screen" />
 
+    <!-- move single joing
+    <node name="move_single_joint" pkg="pose_estimation" type="move_single_joint.py" output="screen" />
+     -->
 
 </launch>

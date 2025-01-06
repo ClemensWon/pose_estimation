@@ -29,11 +29,10 @@ class SingleViewDataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        # Extract position and orientation
+        # Extract position
         position = torch.tensor(item['camera_to_object']['translation'], dtype=torch.float32)
-        orientation = torch.tensor(item['camera_to_object']['rotation'], dtype=torch.float32)
 
-        return image, position, orientation
+        return image, position
 
 # Define Attention-Based Model
 class AttentionSingleViewModel(nn.Module):
@@ -46,7 +45,7 @@ class AttentionSingleViewModel(nn.Module):
             nn.Linear(feature_dim, 128),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(128, 7)  # 3 for position + 4 for orientation
+            nn.Linear(128, 3)  # 3 for position + 4 for orientation
         )
 
     def forward(self, x):
@@ -89,28 +88,22 @@ model = model.to(device)
 
 # Define Loss and Optimizer
 criterion_position = nn.MSELoss()
-def angular_distance_loss(q1, q2):
-    q1 = nn.functional.normalize(q1, dim=-1)
-    q2 = nn.functional.normalize(q2, dim=-1)
-    return torch.mean(1 - torch.sum(q1 * q2, dim=-1))
-
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
-ori_weight = 2
+loss_scale = 100
 # Training Loop
-for epoch in range(20):
+for epoch in range(10):
     model.train()
     epoch_loss = 0.0
     with tqdm(train_loader, desc=f"Epoch {epoch + 1} [Training]") as t:
-        for images, positions, orientations in t:
-            images, positions, orientations = images.to(device), positions.to(device), orientations.to(device)
+        for images, positions in t:
+            images, positions = images.to(device), positions.to(device)
             optimizer.zero_grad()
             predictions = model(images)
-            pos_pred, ori_pred = predictions[:, :3], predictions[:, 3:]
+            pos_pred = predictions
             pos_loss = criterion_position(pos_pred, positions)
-            ori_loss = angular_distance_loss(ori_pred, orientations)
-            loss = pos_loss + ori_weight * ori_loss
+            loss = pos_loss * loss_scale
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item()
@@ -124,13 +117,12 @@ for epoch in range(20):
     val_loss = 0.0
     with torch.no_grad():
         with tqdm(val_loader, desc=f"Epoch {epoch + 1} [Validation]") as t:
-            for images, positions, orientations in t:
-                images, positions, orientations = images.to(device), positions.to(device), orientations.to(device)
+            for images, positions in t:
+                images, positions = images.to(device), positions.to(device)
                 predictions = model(images)
-                pos_pred, ori_pred = predictions[:, :3], predictions[:, 3:]
+                pos_pred = predictions
                 pos_loss = criterion_position(pos_pred, positions)
-                ori_loss = angular_distance_loss(ori_pred, orientations)
-                loss = pos_loss + ori_weight * ori_loss
+                loss = pos_loss * loss_scale
                 val_loss += loss.item()
                 t.set_postfix(loss=loss.item())
 
@@ -141,13 +133,12 @@ model.eval()
 test_loss = 0.0
 with torch.no_grad():
     with tqdm(test_loader, desc="Testing") as t:
-        for images, positions, orientations in t:
-            images, positions, orientations = images.to(device), positions.to(device), orientations.to(device)
+        for images, positions in t:
+            images, positions = images.to(device), positions.to(device)
             predictions = model(images)
-            pos_pred, ori_pred = predictions[:, :3], predictions[:, 3:]
+            pos_pred = predictions
             pos_loss = criterion_position(pos_pred, positions)
-            ori_loss = angular_distance_loss(ori_pred, orientations)
-            loss = pos_loss + ori_weight * ori_loss
+            loss = pos_loss * loss_scale
             test_loss += loss.item()
             t.set_postfix(loss=loss.item())
 
@@ -157,14 +148,12 @@ print(f"Test Average Loss: {test_loss / len(test_loader):.4f}")
 model.eval()
 with torch.no_grad():
     sample_idx = 0  # Select the first item from the test dataset
-    sample_image, ground_truth_pos, ground_truth_ori = test_dataset[sample_idx]
+    sample_image, ground_truth_pos = test_dataset[sample_idx]
     sample_image = sample_image.unsqueeze(0).to(device)  # Add batch dimension
     prediction = model(sample_image)
 
-    predicted_pos = prediction[0, :3].cpu().numpy()
-    predicted_ori = prediction[0, 3:].cpu().numpy()
+    predicted_pos = prediction.cpu().numpy()
+
 
     print("Ground Truth Position:", ground_truth_pos.numpy())
     print("Predicted Position:", predicted_pos)
-    print("Ground Truth Orientation:", ground_truth_ori.numpy())
-    print("Predicted Orientation:", predicted_ori)

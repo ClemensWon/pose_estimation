@@ -1,37 +1,35 @@
 import os
 import json
 import torch
-from torch.utils.data import Dataset
+import torch.nn as nn
+from torchvision import transforms, models
+from torch.utils.data import Dataset, DataLoader, random_split
+from tqdm import tqdm
 from PIL import Image
-from torchvision import transforms
+import numpy as np
 
 class PoseEstimationDataset(Dataset):
-    def __init__(self, image_dir, label_dir, transform=None):
-        self.image_dir = image_dir
-        self.label_dir = label_dir
-        self.image_filenames = sorted(os.listdir(image_dir))
+    def __init__(self, images_dir, annotations_file, transform=None):
+        self.images_dir = images_dir
         self.transform = transform
 
+        # Load annotations
+        with open(annotations_file, 'r') as f:
+            self.annotations = json.load(f)
+
     def __len__(self):
-        return len(self.image_filenames)
+        return len(self.annotations)
 
     def __getitem__(self, idx):
-        # Load image
-        image_path = os.path.join(self.image_dir, self.image_filenames[idx])
-        image = Image.open(image_path).convert("RGB")
+        item = self.annotations[idx]
 
-        # Apply transformations
+        # Image loading and transformation
+        image_path = os.path.join(self.images_dir, f"{item['image_name']}.jpg")
+        image = Image.open(image_path).convert('RGB')
         if self.transform:
             image = self.transform(image)
 
-        # Load label
-        label_path = os.path.join(self.label_dir, self.image_filenames[idx].replace('.png', '.json'))
-        with open(label_path, 'r') as f:
-            label = json.load(f)
-        translation = torch.tensor(label['translation'], dtype=torch.float32)  # [x, y, z]
-        rotation = torch.tensor(label['rotation'], dtype=torch.float32)        # [qw, qx, qy, qz]
+        # Extract position
+        position = torch.tensor(item['camera_to_object']['translation'], dtype=torch.float32)
 
-        # Combine translation and rotation
-        pose = torch.cat([translation, rotation])  # [x, y, z, qw, qx, qy, qz]
-
-        return image, pose
+        return image, position

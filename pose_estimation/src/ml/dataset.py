@@ -9,13 +9,17 @@ from PIL import Image
 import numpy as np
 
 class PoseEstimationDataset(Dataset):
-    def __init__(self, images_dir, annotations_file, transform=None):
+    def __init__(self, images_dir, annotations_file, indices=None, transform=None):
         self.images_dir = images_dir
         self.transform = transform
 
         # Load annotations
         with open(annotations_file, 'r') as f:
             self.annotations = json.load(f)
+
+        # If indices are provided, filter the annotations
+        if indices is not None:
+            self.annotations = [self.annotations[i] for i in indices]
 
     def __len__(self):
         return len(self.annotations)

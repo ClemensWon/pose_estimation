@@ -64,6 +64,8 @@ for epoch in range(10):
             pos_loss = criterion_position(pos_pred, positions)
             loss = pos_loss * loss_scale
             loss.backward()
+            # Gradient Clipping to avoid exploding gradients
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
             epoch_loss += loss.item()
             t.set_postfix(loss=loss.item())

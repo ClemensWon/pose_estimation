@@ -11,8 +11,8 @@ from dataset import PoseEstimationDataset
 from model import PoseEstimationModel
 
 # Load Data
-images_dir = 'catkin_ws\\src\\pose_estimation\\pose_estimation\\dataset\\saved_images'
-annotations_file = 'catkin_ws\\src\\pose_estimation\\pose_estimation\\dataset\\train_dataset.json'
+images_dir = 'pose_estimation\\dataset\\saved_images'
+annotations_file = 'pose_estimation\\dataset\\train_dataset.json'
 
 transform = transforms.Compose([
     transforms.Resize((480, 640)),
@@ -48,7 +48,7 @@ loss_scale = 100
 
 # Initialize variables for model checkpointing
 best_val_loss = float('inf')
-save_dir = "catkin_ws\\src\\pose_estimation\\pose_estimation\\model"
+save_dir = "pose_estimation\\model"
 os.makedirs(save_dir, exist_ok=True)
 
 # Training Loop

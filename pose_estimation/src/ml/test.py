@@ -8,8 +8,8 @@ from dataset import PoseEstimationDataset
 from model import PoseEstimationModel
 
 # Load Data
-images_dir = 'catkin_ws\\src\\pose_estimation\\pose_estimation\\dataset\\saved_images'
-annotations_file = 'catkin_ws\\src\\pose_estimation\\pose_estimation\\dataset\\test_dataset.json'
+images_dir = 'pose_estimation\\dataset\\saved_images'
+annotations_file = 'pose_estimation\\dataset\\test_dataset.json'
 transform = transforms.Compose([
     transforms.Resize((480, 640)),
     transforms.ToTensor(),
@@ -20,7 +20,7 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
 # Load Model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-checkpoint_path = "catkin_ws\\src\\pose_estimation\\pose_estimation\\model\\best_pose_estimation_model.pth"
+checkpoint_path = "pose_estimation\\model\\best_pose_estimation_model.pth"
 feature_extractor = models.resnet18(pretrained=False)
 feature_extractor = nn.Sequential(*list(feature_extractor.children())[:-2])
 model = PoseEstimationModel(feature_extractor, feature_dim=512)

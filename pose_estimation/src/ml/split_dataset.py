@@ -2,9 +2,9 @@ import json
 import random
 
 # Parameters
-input_file = "../../dataset/dataset.json"
-train_output_file = "../../dataset/train_dataset.json"
-test_output_file = "../../dataset/test_dataset.json"
+input_file = "dataset/dataset.json"
+train_output_file = "dataset/train_dataset.json"
+test_output_file = "dataset/test_dataset.json"
 split_ratio = 0.9
 
 # Load the dataset

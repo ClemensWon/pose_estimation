@@ -6,7 +6,6 @@ import time
 import rospy
 import rospkg
 import numpy as np  
-from ml.predict import PoseEstimator
 
 from geometry_msgs.msg import Pose
 from gazebo_msgs.srv import GetModelState
@@ -244,7 +243,6 @@ class PickAndPlace:
             # Example data entry "camera_to_object" 
             # WORKS ONLY FOR POSE 1
             # ------------------------------------------------------------------
-            '''
             data_entry = {
                 "image_name": "target_object",
                 "object_id": "123",
@@ -263,16 +261,7 @@ class PickAndPlace:
                     ]
                 }
             }
-            '''            
-            # Define paths
-            checkpoint_path = "./ml/trained_model/best_pose_estimation_model.pth"
-            image_path = "../saved_images/spawned_object.jpg"
-
-            # Initialize the PoseEstimator
-            pose_estimator = PoseEstimator(checkpoint_path)
-
-            # Make a prediction
-            data_entry = pose_estimator.predict(image_path)
+            
 
             # (D) Calculate the world->object transform
             rospy.loginfo("Calculating world->object transform...")

@@ -1,0 +1,5 @@
+int32 joint_index    # Index of the joint to move
+float64 joint_value  # Target value for the joint (in radians)
+---
+bool success         # True if the motion succeeded
+string message       # Status message

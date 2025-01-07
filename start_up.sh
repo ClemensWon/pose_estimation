@@ -22,6 +22,7 @@ sudo apt-get install -y \
     ros-noetic-gazebo-plugins \
     ros-noetic-ros-control \
     ros-noetic-ros-controllers \
+    ros-noetic-tf2-tools \
     ros-noetic-controller-manager
 
 # Confirm installation
@@ -73,9 +74,9 @@ if [ -z "$PACKAGE_PATH" ]; then
     echo "Make sure the package is in your workspace and spelled correctly."
     exit 1
 else
-    chmod +x "$PACKAGE_PATH/src/"*.py 2>/dev/null
+    chmod +x "$PACKAGE_PATH/src/"*.py "$PACKAGE_PATH/src/services/"*.py 2>/dev/null
     if [ $? -eq 0 ]; then
-        echo "All Python scripts in pose_estimation/src are now executable."
+        echo "All Python scripts in pose_estimation/src and pose_estimation/src/services are now executable."
     else
         echo "No Python scripts found or an error occurred."
     fi

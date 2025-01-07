@@ -1,0 +1,8 @@
+geometry_msgs/Vector3 translation
+geometry_msgs/Quaternion rotation
+string image_name
+string object_id
+string object_type
+---
+bool success
+string message

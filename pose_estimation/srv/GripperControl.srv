@@ -1,0 +1,4 @@
+float64 position  # Desired gripper position (e.g., 0.0 for closed, 0.04 for open)
+---
+bool success      # True if the command was successful
+string message    # Optional message for debugging

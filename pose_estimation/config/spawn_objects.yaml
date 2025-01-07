@@ -1,11 +1,11 @@
 number_of_objects: 1
 spawn_center:
-  pos_x: 0.8
+  pos_x: 0.65
   pos_y: 0
   pos_z: 0.55
 spawn_radius:
-  x_length: 0.20
-  y_length: 0.20
+  x_length: 0.1
+  y_length: 0.1
 orientation:
   x_degree: 1.5708
   y_degree: 0

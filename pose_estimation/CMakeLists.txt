@@ -27,6 +27,10 @@ add_service_files(
    DeleteObject.srv
    MoveJoints.srv
    SaveImage.srv
+   GripperControl.srv
+   MoveToPose.srv
+   MoveToCoordinate.srv
+   MoveSingleJoint.srv
 )
 
 generate_messages(

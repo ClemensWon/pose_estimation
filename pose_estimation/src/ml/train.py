@@ -66,9 +66,9 @@ model = model.to(device)
 
 # Define Loss and Optimizer
 criterion_position = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.2)
-loss_scale = 100
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, weight_decay=1e-5)
+lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
+loss_scale = 10
 
 # Early Stopping Parameters
 patience = 5
@@ -81,6 +81,16 @@ os.makedirs(save_dir, exist_ok=True)
 
 # Training Loop
 for epoch in range(50):
+    if epoch == 0:  # Freeze layers initially
+        for param in feature_extractor.parameters():
+            param.requires_grad = False
+        print("Feature extractor frozen.")
+
+    if epoch == 5:  # Unfreeze layers after 5 epochs
+        for param in feature_extractor.parameters():
+            param.requires_grad = True
+        print("Feature extractor unfrozen.")
+
     model.train()
     epoch_loss = 0.0
     with tqdm(train_loader, desc=f"Epoch {epoch + 1} [Training]") as t:

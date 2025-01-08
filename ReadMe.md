@@ -12,16 +12,19 @@
 
 ### Initialization
 
-1.) Start Container
-2.) In folder catkin_ws/src:
+1.) Start container
+1.1) bash run_docker_from_hub.sh (SHARED_DIR=/home/fhtw_user/catkin_ws/src)
+2.) In folder catkin_ws/src/:
 2.1) git clone https://github.com/ClemensWon/PoseEstimation (only once)
-3.) In folder catkin_ws:
+3.) In folder catkin_ws/:
 3.1) bash ./src/pose_estimation/start_up.sh
 3.2) bash source devel/setup.bash
+4.) roslaunch pose_estimation generat_dataset.launch
+5.) roslaunch pose_estimation spawn_pick_up.launch (you need model weights in folder /trained_model)
 
 #### Directory
 
-main directories and files
+main directories and important files
 
 - pose_estimation
   - .gitignore
@@ -37,7 +40,14 @@ main directories and files
     - saved_images/
     - src/
       - ml/
+        - trained_model/best_pose_estimation_model.pth
+        - predict.py
       - services/
+        - camera_snap.py
+        - gripper_service.py
+        - move_to_coordinate.py
+        - moveit.py
+        - spawn_objects.py
       - generate_dataset.py
       - pick_and_place.py
     - srv/
@@ -45,6 +55,29 @@ main directories and files
   - robotiq_description/
   - roboticsgroup_upatras_gazebo_plugins/
   - universal_robot/
+
+#### External Plugins
+
+- Universal robot
+  https://github.com/ros-industrial/universal_robot
+- Gripper
+  https://github.com/philwall3/UR5-with-Robotiq-Gripper-and-Kinect/tree/master
+- Moveit
+  https://www.moveit.at/
+
+### Main Actions
+
+#### Data Generation
+
+In folder /catkin_ws:
+
+- roslaunch pose_estimation generate_dataset.launch
+
+#### Pick and place
+
+In folder /catkin_ws:
+
+- roslaunch pose_estimation spawn_pick_up.launch
 
 ### Services
 
@@ -98,17 +131,3 @@ In folder /catkin_ws:
 In folder /catkin_ws:
 rosservice call /move_single_joint "joint_index: 5
 joint_value: -1.57"
-
-### Actions
-
-#### Data Generation
-
-In folder /catkin_ws:
-
-- roslaunch pose_estimation generate_dataset.launch
-
-#### Pick and place
-
-In folder /catkin_ws:
-
-- roslaunch pose_estimation spawn_pick_up.launch

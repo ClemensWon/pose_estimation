@@ -9,11 +9,11 @@ spawn_radius:
 orientation:
   x_degree: 1.5708
   y_degree: 0
-  z_degree: 0
+  z_degree: 1.5708
 orientation_range:
   x_degree: 0
   y_degree: 0
-  z_degree: 3.14
+  z_degree: 0
 object_types:
   cube: False
   cylinders: True

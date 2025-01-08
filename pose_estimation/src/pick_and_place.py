@@ -120,7 +120,7 @@ class PickAndPlace:
         rospy.wait_for_service('gripper_control')
         try:
             gripper_control = rospy.ServiceProxy('gripper_control', GripperControl)
-            response = gripper_control(position=0.75)  # Closed position
+            response = gripper_control(position=0.48)  # Closed position
             if response.success:
                 rospy.loginfo(f"Gripper closed successfully: {response.message}")
             else:
@@ -299,18 +299,23 @@ class PickAndPlace:
             target_coordinate = Pose()
             target_coordinate.position.x = world_obj_translation[0]
             target_coordinate.position.y = world_obj_translation[1]
-            target_coordinate.position.z = world_obj_translation[2] #-0.3 add offset
+            target_coordinate.position.z = 0.5
             #target_coordinate.orientation.x = world_obj_rotation[0]
             #target_coordinate.orientation.y = world_obj_rotation[1]
             #target_coordinate.orientation.z = world_obj_rotation[2]
             #target_coordinate.orientation.w = world_obj_rotation[3]
-            target_coordinate.orientation.x = 0.0
+            target_coordinate.orientation.x = 1.0
             target_coordinate.orientation.y = 0.0 #1.0 orientate from above
             target_coordinate.orientation.z = 0.0
             target_coordinate.orientation.w = 0.0
 
             # Move the robot to this object pose
             self.move_robot_to_coordinate(target_coordinate)
+
+            target_coordinate.position.z = 0.2
+
+            self.move_robot_to_coordinate(target_coordinate)
+
 
             '''
             # Move the 4th joint to a desired value (e.g., 45 degrees in radians)
@@ -321,6 +326,11 @@ class PickAndPlace:
             rospy.sleep(4)  
 
             self.close_gripper()
+
+            target_coordinate.position.z = 0.5
+
+            self.move_robot_to_coordinate(target_coordinate)
+
 
 
             rospy.loginfo("Pick-and-place operation complete.")

@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from dataset import PoseEstimationDataset
 from model import PoseEstimationModel
+import config
 
 # Load Data
 images_dir = 'pose_estimation/dataset/saved_images'
@@ -21,9 +22,8 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 # Load Model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 checkpoint_path = "pose_estimation/model/best_pose_estimation_model.pth"
-feature_extractor = models.resnet18(models.ResNet18_Weights.DEFAULT)
-feature_extractor = nn.Sequential(*list(feature_extractor.children())[:-2])
-model = PoseEstimationModel(feature_extractor, feature_dim=512)
+feature_extractor = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT).features
+model = PoseEstimationModel(feature_extractor, feature_dim=1280)
 checkpoint = torch.load(checkpoint_path, map_location=device)
 model.load_state_dict(checkpoint['model_state_dict'])
 model = model.to(device)
@@ -32,7 +32,6 @@ print(f"Model loaded from {checkpoint_path}")
 
 # Define Loss Function
 criterion_position = nn.MSELoss()
-loss_scale = 100
 
 # Testing Loop
 test_loss = 0.0
@@ -43,7 +42,7 @@ with torch.no_grad():
             predictions = model(images)
             pos_pred = predictions
             pos_loss = criterion_position(pos_pred, positions)
-            loss = pos_loss * loss_scale
+            loss = pos_loss * config.loss_scale
             test_loss += loss.item()
             t.set_postfix(loss=loss.item())
 

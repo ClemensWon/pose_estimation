@@ -12,6 +12,5 @@ gamma=0.5
 # loss = nn.MSELoss
 loss_scale = 10
 batch_size = 32
-feature_dim = 256
 epochs = 70
 

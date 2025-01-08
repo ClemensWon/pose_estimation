@@ -15,7 +15,7 @@ catkin_package(
     include
   LIBRARIES
     roboticsgroup_upatras_gazebo_mimic_joint_plugin
-    roboticsgroup_upatras_gazebo_disable_link_plugin
+    roboticsgroup_upsatras_gazebo_disable_link_plugin
   CATKIN_DEPENDS
     control_toolbox
     gazebo_ros

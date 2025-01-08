@@ -6,7 +6,6 @@ import time
 import rospy
 import rospkg
 import numpy as np  
-from ml.predict import PoseEstimator
 
 from geometry_msgs.msg import Pose
 from gazebo_msgs.srv import GetModelState
@@ -244,7 +243,6 @@ class PickAndPlace:
             # Example data entry "camera_to_object" 
             # WORKS ONLY FOR POSE 1
             # ------------------------------------------------------------------
-            '''
             data_entry = {
                 "image_name": "target_object",
                 "object_id": "123",
@@ -263,16 +261,7 @@ class PickAndPlace:
                     ]
                 }
             }
-            '''            
-            # Define paths
-            checkpoint_path = "/home/fhtw_user/catkin_ws/src/pose_estimation/pose_estimation/src/ml/trained_model/best_pose_estimation_model.pth"
-            image_path = "/home/fhtw_user/catkin_ws/src/pose_estimation/pose_estimation/saved_images/spawned_object.jpg"
-
-            # Initialize the PoseEstimator
-            pose_estimator = PoseEstimator(checkpoint_path)
-
-            # Make a prediction
-            data_entry = pose_estimator.predict(image_path)
+            
 
             # (D) Calculate the world->object transform
             rospy.loginfo("Calculating world->object transform...")
@@ -299,13 +288,13 @@ class PickAndPlace:
             target_coordinate = Pose()
             target_coordinate.position.x = world_obj_translation[0]
             target_coordinate.position.y = world_obj_translation[1]
-            target_coordinate.position.z = world_obj_translation[2] 
+            target_coordinate.position.z = world_obj_translation[2] - 0.3
             #target_coordinate.orientation.x = world_obj_rotation[0]
             #target_coordinate.orientation.y = world_obj_rotation[1]
             #target_coordinate.orientation.z = world_obj_rotation[2]
             #target_coordinate.orientation.w = world_obj_rotation[3]
             target_coordinate.orientation.x = 0.0
-            target_coordinate.orientation.y = 1.0
+            target_coordinate.orientation.y = 0.0
             target_coordinate.orientation.z = 0.0
             target_coordinate.orientation.w = 0.0
 

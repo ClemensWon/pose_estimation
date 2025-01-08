@@ -56,7 +56,7 @@ train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
 # Load Model
-feature_extractor = models.resnet18(pretrained=True)
+feature_extractor = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
 feature_extractor = nn.Sequential(*list(feature_extractor.children())[:-2])
 model = PoseEstimationModel(feature_extractor, feature_dim=512)
 
@@ -67,7 +67,7 @@ model = model.to(device)
 # Define Loss and Optimizer
 criterion_position = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
+lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.2)
 loss_scale = 100
 
 # Early Stopping Parameters

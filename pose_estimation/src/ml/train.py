@@ -54,7 +54,7 @@ train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=T
 val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
 
 # Load Model
-feature_extractor = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+feature_extractor = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
 feature_extractor = nn.Sequential(*list(feature_extractor.children())[:-2])
 model = PoseEstimationModel(feature_extractor, feature_dim=512)
 

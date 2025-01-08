@@ -263,7 +263,8 @@ class PickAndPlace:
                     ]
                 }
             }
-            '''            
+            '''           
+            ### READOUT ML MODEL 
             # Define paths
             checkpoint_path = "/home/fhtw_user/catkin_ws/src/pose_estimation/pose_estimation/src/ml/trained_model/best_pose_estimation_model.pth"
             image_path = "/home/fhtw_user/catkin_ws/src/pose_estimation/pose_estimation/saved_images/spawned_object.jpg"
@@ -288,24 +289,23 @@ class PickAndPlace:
 
             rospy.sleep(2)
 
+            ### READOUT ML MODEL 
             
             #self.move_robot(self.robot_pick[2])
-            
             #rospy.sleep(2)
-
 
             # (F) Move to the object position
             rospy.loginfo("Moving to the object position...")
             target_coordinate = Pose()
             target_coordinate.position.x = world_obj_translation[0]
             target_coordinate.position.y = world_obj_translation[1]
-            target_coordinate.position.z = world_obj_translation[2] 
+            target_coordinate.position.z = world_obj_translation[2] #-0.3 add offset
             #target_coordinate.orientation.x = world_obj_rotation[0]
             #target_coordinate.orientation.y = world_obj_rotation[1]
             #target_coordinate.orientation.z = world_obj_rotation[2]
             #target_coordinate.orientation.w = world_obj_rotation[3]
             target_coordinate.orientation.x = 0.0
-            target_coordinate.orientation.y = 1.0
+            target_coordinate.orientation.y = 0.0 #1.0 orientate from above
             target_coordinate.orientation.z = 0.0
             target_coordinate.orientation.w = 0.0
 

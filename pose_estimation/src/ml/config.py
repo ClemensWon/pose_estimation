@@ -5,12 +5,12 @@ unfreeze_pretrained_epoch = 5
 # pretrained_weights = torchvision.models.ResNet18_Weights.IMAGENET1K_V1
 # optimizer = torch.optim.Adam
 lr=1e-5
-weight_decay=1e-5
+weight_decay=1e-4
 # scheduler = torch.optim.lr_scheduler.StepLR
 step_size=5
 gamma=0.5
 # loss = nn.MSELoss
 loss_scale = 10
-batch_size = 32
+batch_size = 16
 epochs = 70
 

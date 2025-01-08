@@ -1,14 +1,12 @@
 import os
-import json
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader
 from tqdm import tqdm
-from PIL import Image
-import numpy as np
 from dataset import PoseEstimationDataset
 from model import PoseEstimationModel
+import config
 
 # Load Data
 images_dir = 'pose_estimation/dataset/saved_images'
@@ -44,7 +42,7 @@ val_transform = transforms.Compose([
 dataset = PoseEstimationDataset(images_dir, annotations_file)
 dataset_size = len(dataset)
 indices = list(range(dataset_size))
-train_size = int(0.8 * dataset_size)
+train_size = int(config.train_val_split * dataset_size)
 val_size = dataset_size - train_size
 train_indices, val_indices = indices[:train_size], indices[train_size:]
 
@@ -52,13 +50,14 @@ train_dataset = PoseEstimationDataset(images_dir, annotations_file, indices=trai
 val_dataset = PoseEstimationDataset(images_dir, annotations_file, indices=val_indices, transform=val_transform)
 
 # Create DataLoaders
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
 
 # Load Model
-feature_extractor = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+# feature_extractor = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+feature_extractor = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT)
 feature_extractor = nn.Sequential(*list(feature_extractor.children())[:-2])
-model = PoseEstimationModel(feature_extractor, feature_dim=512)
+model = PoseEstimationModel(feature_extractor, feature_dim=config.feature_dim)
 
 # Check for CUDA
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -66,12 +65,11 @@ model = model.to(device)
 
 # Define Loss and Optimizer
 criterion_position = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, weight_decay=1e-5)
-lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
-loss_scale = 10
+optimizer = torch.optim.Adam(model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
+lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=config.step_size, gamma=config.gamma)
 
 # Early Stopping Parameters
-patience = 5
+patience = config.early_stopping_patience
 no_improvement_count = 0
 
 # Initialize variables for model checkpointing
@@ -80,13 +78,13 @@ save_dir = "pose_estimation/model"
 os.makedirs(save_dir, exist_ok=True)
 
 # Training Loop
-for epoch in range(50):
+for epoch in range(config.epochs):
     if epoch == 0:  # Freeze layers initially
         for param in feature_extractor.parameters():
             param.requires_grad = False
         print("Feature extractor frozen.")
 
-    if epoch == 5:  # Unfreeze layers after 5 epochs
+    if epoch == config.unfreeze_pretrained_epoch:  # Unfreeze layers after 5 epochs
         for param in feature_extractor.parameters():
             param.requires_grad = True
         print("Feature extractor unfrozen.")
@@ -100,7 +98,7 @@ for epoch in range(50):
             predictions = model(images)
             pos_pred = predictions
             pos_loss = criterion_position(pos_pred, positions)
-            loss = pos_loss * loss_scale
+            loss = pos_loss * config.loss_scale
             loss.backward()
             # Gradient Clipping to avoid exploding gradients
             #torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -120,7 +118,7 @@ for epoch in range(50):
                 predictions = model(images)
                 pos_pred = predictions
                 pos_loss = criterion_position(pos_pred, positions)
-                loss = pos_loss * loss_scale
+                loss = pos_loss * config.loss_scale
                 val_loss += loss.item()
                 t.set_postfix(loss=loss.item())
 

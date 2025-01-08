@@ -21,7 +21,7 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 # Load Model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 checkpoint_path = "pose_estimation/model/best_pose_estimation_model.pth"
-feature_extractor = models.resnet18(pretrained=False)
+feature_extractor = models.resnet18(models.ResNet18_Weights.DEFAULT)
 feature_extractor = nn.Sequential(*list(feature_extractor.children())[:-2])
 model = PoseEstimationModel(feature_extractor, feature_dim=512)
 checkpoint = torch.load(checkpoint_path, map_location=device)

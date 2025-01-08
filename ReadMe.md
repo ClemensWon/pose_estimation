@@ -15,7 +15,8 @@
 1.) Start container
 1.1) bash run_docker_from_hub.sh (SHARED_DIR=/home/fhtw_user/catkin_ws/src)
 2.) In folder catkin_ws/src/:
-2.1) git clone https://github.com/ClemensWon/PoseEstimation (only once)
+2.1) git clone https://github.com/ClemensWon/pose_estimation.git (only once)
+2.2) the cloned folder name needs to be pose_estimation (catkin_ws/src/pose_estimation)
 3.) In folder catkin_ws/:
 3.1) bash ./src/pose_estimation/start_up.sh
 3.2) bash source devel/setup.bash

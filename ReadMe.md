@@ -16,9 +16,8 @@ catkin_ws/
  ├── config/
 ├── dataset/
 ├── launch/  
- ├── maps/
-├── msg/  
- ├── saved_images/
+├── maps/
+├── saved_images/
 ├── src/
 ├── srv/
 ├── urdf/
@@ -35,9 +34,8 @@ catkin_ws/
 
 #### Object Handling:
 
-rostopic pub spawn_trigger std_msgs/Empty "{}"
-rostopic echo /object_spawned
-rostopic pub delete_object pose_estimation/DeleteObject "object_id: 'e3b235e0-1d86-4aa9-b603-d40115f3e2e8'"
+rosservice call /spawn_object "{}"
+rosservice call /delete_object "object_id: 'e3b235e0-1d86-4aa9-b603-d40115f3e2e8'"
 
 ### Services
 

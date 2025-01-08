@@ -19,7 +19,8 @@
 2.2) the cloned folder name needs to be pose_estimation (catkin_ws/src/pose_estimation)
 3.) In folder catkin_ws/:
 3.1) bash ./src/pose_estimation/start_up.sh
-3.2) bash source devel/setup.bash
+3.2) we install all plugins, python modules and run catkin_make (this can take a while because we also install torch for prediction)
+3.3) bash source devel/setup.bash
 4.) roslaunch pose_estimation generat_dataset.launch
 5.) roslaunch pose_estimation spawn_pick_up.launch (you need model weights in folder /trained_model)
 

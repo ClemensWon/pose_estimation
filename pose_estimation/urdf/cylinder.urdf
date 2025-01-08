@@ -4,39 +4,69 @@
             <geometry>
                 <cylinder radius="0.025" length="0.1"/>
             </geometry>
-            <material name="red">
-                <color rgba="1 0 0 1"/>
-            </material>
         </visual>
+
         <collision>
             <geometry>
                 <cylinder radius="0.025" length="0.1"/>
             </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>1.0</mu>
+                        <mu2>1.0</mu2>
+                        <slip1>0.0</slip1>
+                        <slip2>0.0</slip2>
+                    </ode>
+                </friction>
+                <contact>
+                    <ode>
+                        <soft_cfm>0.01</soft_cfm>
+                        <soft_erp>0.2</soft_erp>
+                        <kp>1000.0</kp>
+                        <kd>100.0</kd>
+                        <max_vel>0.01</max_vel>
+                        <min_depth>0.001</min_depth>
+                    </ode>
+                </contact>
+            </surface>
         </collision>
-        <inertial>
-            <mass value="0.1"/>
-            <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
-        </inertial>
 
-        <!-- Add the plugin here -->
-        <gazebo>
-            <plugin name="gazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
-                <update_rate>50.0</update_rate>
-                <body_name>cylinder_link</body_name>
-                <frameName>cylinder_link</frameName>
-                <yaw_offset>0.0</yaw_offset>
-                <publish_tf>true</publish_tf>        <!-- Add this -->
-                <pitch_offset>0.0</pitch_offset>
-                <roll_offset>0.0</roll_offset>
-                <xyz_offset>0 0 0</xyz_offset>
-                <use_tf_static>False</use_tf_static>
-                <odomTopic>odom</odomTopic>
-                <robotNamespace>/gazebo_p3d</robotNamespace>
-                <always_on>true</always_on>
-            </plugin>
-        </gazebo>
+        <inertial>
+            <mass value="0.2"/>
+            <inertia 
+                ixx="0.000416666667" 
+                ixy="0.0" 
+                ixz="0.0" 
+                iyy="0.000416666667" 
+                iyz="0.0" 
+                izz="0.0001"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </inertial>
     </link>
-    
+
+    <gazebo reference="cylinder_link">
+        <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <emissive>0 0 0 0</emissive>
+        </material>
+        <mu1>1.0</mu1>
+        <mu2>1.0</mu2>
+        <kp>1000.0</kp>
+        <kd>100.0</kd>
+        <maxVel>0.01</maxVel>
+        <minDepth>0.001</minDepth>
+        <selfCollide>true</selfCollide>
+        <gravity>true</gravity>
+        <static>false</static>
+    </gazebo>
+
+    <gazebo>
+        <plugin name="gazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
+        </plugin>
+    </gazebo>
 
     <gazebo reference="cylinder_link">
         <visual>

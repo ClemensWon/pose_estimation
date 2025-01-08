@@ -291,21 +291,13 @@ class PickAndPlace:
 
             ### READOUT ML MODEL 
             
-            #self.move_robot(self.robot_pick[2])
-            #rospy.sleep(2)
-
-            # (F) Move to the object position
             rospy.loginfo("Moving to the object position...")
             target_coordinate = Pose()
-            target_coordinate.position.x = world_obj_translation[0]
-            target_coordinate.position.y = world_obj_translation[1]
+            target_coordinate.position.x = world_obj_translation[0] -0.025
+            target_coordinate.position.y = world_obj_translation[1] 
             target_coordinate.position.z = 0.5
-            #target_coordinate.orientation.x = world_obj_rotation[0]
-            #target_coordinate.orientation.y = world_obj_rotation[1]
-            #target_coordinate.orientation.z = world_obj_rotation[2]
-            #target_coordinate.orientation.w = world_obj_rotation[3]
             target_coordinate.orientation.x = 1.0
-            target_coordinate.orientation.y = 0.0 #1.0 orientate from above
+            target_coordinate.orientation.y = 0.0
             target_coordinate.orientation.z = 0.0
             target_coordinate.orientation.w = 0.0
 
@@ -328,10 +320,21 @@ class PickAndPlace:
             self.close_gripper()
 
             target_coordinate.position.z = 0.5
+            
 
             self.move_robot_to_coordinate(target_coordinate)
 
+            
+            target_coordinate.orientation.x = -0.5
+            target_coordinate.orientation.y = 0.5
+            target_coordinate.orientation.z = 0.5
+            target_coordinate.orientation.w = 0.5
+            target_coordinate.position.z = 0.18
 
+
+            self.move_robot_to_coordinate(target_coordinate)
+
+            self.open_gripper()
 
             rospy.loginfo("Pick-and-place operation complete.")
 

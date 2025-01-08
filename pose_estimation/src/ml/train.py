@@ -30,7 +30,7 @@ class AddGaussianNoise(object):
 train_transform = transforms.Compose([
     transforms.Resize((480, 640)),
     transforms.ToTensor(),
-    AddGaussianNoise(mean=0.0, std=0.02),
+#    AddGaussianNoise(mean=0.0, std=0.02),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
@@ -67,7 +67,7 @@ model = model.to(device)
 # Define Loss and Optimizer
 criterion_position = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', patience=2, factor=0.5, verbose=True)
+lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 loss_scale = 100
 
 # Early Stopping Parameters
@@ -93,7 +93,7 @@ for epoch in range(50):
             loss = pos_loss * loss_scale
             loss.backward()
             # Gradient Clipping to avoid exploding gradients
-            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            #torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
             epoch_loss += loss.item()
             t.set_postfix(loss=loss.item())

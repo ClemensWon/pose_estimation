@@ -23,7 +23,8 @@ sudo apt-get install -y \
     ros-noetic-ros-control \
     ros-noetic-ros-controllers \
     ros-noetic-tf2-tools \
-    ros-noetic-controller-manager
+    ros-noetic-controller-manager \
+    python3-pip
 
 # Confirm installation
 echo "Installation complete. All dependencies have been installed."
@@ -36,6 +37,20 @@ if [ $? -eq 0 ]; then
     echo "Permissions for /dev/dri/* set successfully."
 else
     echo "Failed to set permissions for /dev/dri/*. Ensure this script is run as root or with sudo."
+    exit 1
+fi
+
+# Install Python modules
+echo "Installing Python modules: torch, torchvision, and Pillow..."
+pip3 install --upgrade pip
+pip3 install torch torchvision pillow tqdm
+
+
+
+if [ $? -eq 0 ]; then
+    echo "Python modules installed successfully."
+else
+    echo "Error: Failed to install Python modules. Please check the output for details."
     exit 1
 fi
 

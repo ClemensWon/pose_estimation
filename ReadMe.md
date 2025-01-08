@@ -34,7 +34,6 @@ main directories and files
       - generate_dataset.launch
       - spawn_pick_up.launch
     - maps/
-    - msg/
     - saved_images/
     - src/
       - ml/
@@ -51,9 +50,8 @@ main directories and files
 
 #### Spawn Object:
 
-rostopic pub spawn_trigger std_msgs/Empty "{}"
-rostopic echo /object_spawned
-rostopic pub delete_object pose_estimation/DeleteObject "object_id: 'e3b235e0-1d86-4aa9-b603-d40115f3e2e8'"
+rosservice call /spawn_object "{}"
+rosservice call /delete_object "object_id: 'e3b235e0-1d86-4aa9-b603-d40115f3e2e8'"
 
 #### Test moveit
 

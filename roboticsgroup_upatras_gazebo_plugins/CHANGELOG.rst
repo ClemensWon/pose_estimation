@@ -14,7 +14,7 @@ Changelog for package roboticsgroup_upatras_gazebo_plugins
 * Added maxEffort parameter to MimicJoint plugin
 * Added PID control capability to mimic joint plugin
 * Move catkin_package macro so it is called before targets are defined.
-  Fixes plugins not getting found when doing isolated builds
+  Fixes plugins not gettsing found when doing isolated builds
 * Add missing setForce() call (otherwise PID option doesn't do anything)
 * Support of Gazebo 7 was added
 * Support all PID gain parameters, dynamic_reconfigure

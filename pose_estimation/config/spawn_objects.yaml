@@ -4,8 +4,8 @@ spawn_center:
   pos_y: 0
   pos_z: 0.55
 spawn_radius:
-  x_length: 0.1
-  y_length: 0.1
+  x_length: 0.15
+  y_length: 0.15
 orientation:
   x_degree: 1.5708
   y_degree: 0

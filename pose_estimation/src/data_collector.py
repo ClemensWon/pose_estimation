@@ -31,7 +31,7 @@ def pose_to_matrix(pose):
 
 def matrix_to_pose(mat):
     """
-    Convert a 4x4 transformation matrix to geometry_msgs/Pose.
+    Convert 4x4 transformation matrix to geometry_msgs/Pose.
     """
     trans = tft.translation_from_matrix(mat)
     quat  = tft.quaternion_from_matrix(mat)
@@ -46,15 +46,16 @@ def matrix_to_pose(mat):
     pose.orientation.w = quat[3]
     return pose
 
+# relative transformation
 def compute_relative_transform(pose_a, pose_b):
     """
     Compute T_A_B = (T_world_A)^{-1} * (T_world_B)
     given geometry_msgs/Pose for A (tool0) and B (object) in the world frame.
-    
-    Returns a geometry_msgs/Pose representing the transform from A->B.
     """
-    mat_a_world = pose_to_matrix(pose_a)  # T_world_A
-    mat_b_world = pose_to_matrix(pose_b)  # T_world_B
+    # T_world_A
+    mat_a_world = pose_to_matrix(pose_a)
+      # T_world_B  
+    mat_b_world = pose_to_matrix(pose_b)
 
     # Invert T_world_A -> T_A_world
     mat_world_a = mat_a_world
@@ -87,7 +88,7 @@ class DataCollector:
         rospy.wait_for_service('move_joints')
         rospy.wait_for_service('save_image')
 
-        # NEW: Wait for /gazebo/get_model_state to retrieve object world pose
+        # Wait for /gazebo/get_model_state to retrieve object world pose
         rospy.wait_for_service('/gazebo/get_model_state')
         self.get_model_state = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
 
@@ -119,7 +120,7 @@ class DataCollector:
         response = self.move_joints(target_pose)
         # Potentially check response for success/failure
 
-
+    # call spawn object service
     def spawn_object(self):
         response = self.spawn_service()
         if response.success:
@@ -129,7 +130,7 @@ class DataCollector:
             rospy.logerr(f"Failed to spawn object: {response.message}")
             return None
 
-
+    # call delete from spawn delete service
     def delete_object(self, object_id):
         response = self.delete_service(object_id=object_id)
         if response.success:
@@ -137,14 +138,14 @@ class DataCollector:
         else:
             rospy.logerr(f"Failed to delete object: {response.message}")
 
-
+    # call take picture service
     def take_picture(self, image_name):
         rospy.loginfo(f"Capturing image: {image_name}")
         self.current_image_name = image_name
         response = self.save_image_service(image_name)
         return response
 
-
+    # save data to dataset.json
     def save_data(self):
         dataset_file = os.path.join(self.dataset_folder, "dataset.json")
         with open(dataset_file, "w") as f:
@@ -201,14 +202,12 @@ class DataCollector:
             rospy.loginfo(f"Tool0 Orientation: x={pose.orientation.x}, y={pose.orientation.y}, z={pose.orientation.z}, w={pose.orientation.w}")
 
                 
-            
             return pose
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
             rospy.logwarn(f"Could not find transform world->tool0: {e}")
             return None
 
-
-    # Save the camera->object transform (tool0->object) plus other info
+    # Save the camera->object transform (tool0->object)
     def save_transformation_data(self, image_name, object_id, object_type):
         """
         1. Get the object's pose in the world via GetModelState
@@ -260,11 +259,14 @@ class DataCollector:
 
 
     def run(self):
+        # parameteres are defined in yaml files in folder /config
         try:
             rospy.loginfo("Starting data collection...")
 
             for n in range(self.iterations):
-                #Spawn object
+                
+                # Spawn object
+                
                 spawn_msg = self.spawn_object()
                 if spawn_msg is None:
                     continue
@@ -288,7 +290,7 @@ class DataCollector:
 
                 # Delete the spawned object
                 self.delete_object(object_id)
-
+                # repeat
             rospy.loginfo("Data collection complete.")
 
         except rospy.ROSInterruptException:

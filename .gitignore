@@ -1,6 +1,4 @@
 saved_images
-<<<<<<< HEAD
+pose_estimation/src/ml/trained_model
 pose_estimation/src/ml/trained_model/best_pose_estimation_model.pth
-=======
-roboticsgroup_upatras_gazebo_plugins
->>>>>>> d9f9ee3f13f103302f141592695ad4a33e8611f1
+

@@ -69,7 +69,7 @@
 
     <!-- Spawn additional objects if any -->
     <group ns="spawn_objects">
-        <rosparam file="$(find pose_estimation)/config/spawn_objects.yaml"/>
+        <rosparam file="$(find pose_estimation)/config/spawn_object_data_collect.yaml"/>
     </group>
     <node name="spawn_objects_node" pkg="pose_estimation" type="spawn_objects.py" output="screen"/>
     

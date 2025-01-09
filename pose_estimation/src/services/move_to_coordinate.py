@@ -11,15 +11,15 @@ class CoordinateMover:
     def __init__(self):
         # Initialize MoveIt and the ROS node
         moveit_commander.roscpp_initialize(sys.argv)
-        rospy.init_node("move_to_coordinate", anonymous=True)  # Ensure the name matches client
+        rospy.init_node("move_to_coordinate", anonymous=True)  
         self.marker_pub = rospy.Publisher("/visualization_marker", Marker, queue_size=10)
-        # Create a MoveGroupCommander for the manipulator
+        # MoveGroupCommander for the manipulator
         self.move_group = moveit_commander.MoveGroupCommander("manipulator", wait_for_servers=30)
         self.move_group.set_planning_time(10)  
         self.move_group.set_num_planning_attempts(20) 
 
 
-        # Optionally, set the reference frame if needed
+        # Set the reference frame if needed
         self.move_group.set_pose_reference_frame("world")
 
         # Create the service
@@ -34,11 +34,11 @@ class CoordinateMover:
             target_pose (Pose): The target pose to visualize.
         """
         marker = Marker()
-        marker.header.frame_id = "world"  # Match the reference frame of the pose
+        marker.header.frame_id = "world"  
         marker.header.stamp = rospy.Time.now()
         marker.ns = "target_pose"
         marker.id = 0
-        marker.type = Marker.ARROW  # You can change to SPHERE, CUBE, etc.
+        marker.type = Marker.ARROW  # Change to SPHERE, CUBE, etc.
         marker.action = Marker.ADD
 
         # Set marker position

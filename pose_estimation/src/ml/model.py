@@ -18,7 +18,7 @@ class PoseEstimationModel(nn.Module):
             nn.Linear(feature_dim, 128),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(128, 3)  # 3 for position + 4 for orientation
+            nn.Linear(128, 3)  # 3 for translation + 4 for orientation
         )
 
     def forward(self, x):

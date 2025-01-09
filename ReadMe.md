@@ -71,15 +71,21 @@ main directories and important files
 
 #### Data Generation
 
-In folder /catkin_ws:
+Action to collect data for model training
 
+- In folder /catkin_ws:
 - roslaunch pose_estimation generate_dataset.launch
+
+important files are: generate_dataset.launch / data_collector.py
 
 #### Pick and place
 
-In folder /catkin_ws:
+Action for pick and place action
 
+- In folder /catkin_ws:
 - roslaunch pose_estimation spawn_pick_up.launch
+
+important files are: spawn_pick_up.launch / pick_and_place.py
 
 ### Services
 

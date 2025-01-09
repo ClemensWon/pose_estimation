@@ -1,17 +1,20 @@
 <?xml version="1.0"?>
-<robot name="cylinder">
-    <link name="cylinder_link">
+<robot name="cube">
+    <!-- Material definitions -->
+    <material name="blue">
+        <color rgba="0 0 1 1"/>
+    </material>
+
+    <link name="cube_link">
         <visual>
             <geometry>
-                <cylinder radius="0.025" length="0.1"/>
+                <box size="0.05 0.05 0.05"/>
             </geometry>
-            <material name="red">
-                <color rgba="1 0 0 1"/>
-            </material>
+            <material name="blue"/>
         </visual>
         <collision>
             <geometry>
-                <cylinder radius="0.025" length="0.1"/>
+                <box size="0.05 0.05 0.05"/>
             </geometry>
         </collision>
         <inertial>
@@ -19,11 +22,13 @@
             <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
         </inertial>
     </link>
-    <gazebo reference="cylinder_link">
+
+    <!-- Gazebo-specific color -->
+    <gazebo reference="cube_link">
         <visual>
             <material>
-                <ambient>1 0 0 1</ambient>
-                <diffuse>1 0 0 1</diffuse>
+                <ambient>0 0 1 1</ambient>
+                <diffuse>0 0 1 1</diffuse>
                 <specular>0.1 0.1 0.1 1</specular>
                 <emissive>0 0 0 0</emissive>
             </material>

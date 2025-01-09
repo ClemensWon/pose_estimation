@@ -234,6 +234,7 @@ class PickAndPlace:
             # Initialize the PoseEstimator
             pose_estimator = PoseEstimator(checkpoint_path)
 
+            ### READOUT ML MODEL 
             # Make a prediction with image
             data_entry = pose_estimator.predict(image_path)
 
@@ -250,8 +251,6 @@ class PickAndPlace:
             rospy.loginfo(f"\nFinal object coordinates in world frame:\n x={world_obj_translation[0]:.4f}, y={world_obj_translation[1]:.4f}, z={world_obj_translation[2]:.4f}")
 
             rospy.sleep(2)
-
-            ### READOUT ML MODEL 
             
             rospy.loginfo("Moving to the object position...")
             target_coordinate = Pose()
@@ -259,6 +258,7 @@ class PickAndPlace:
             target_coordinate.position.y = world_obj_translation[1] 
             target_coordinate.position.z = 0.5 #height is always the same / table position
             target_coordinate.orientation.x = 1.0 # orientation to come with the gripper from above #world_obj_rotation[0]
+            ### use world_obj_rotation to use predicted rotations
             target_coordinate.orientation.y = 0.0 #world_obj_rotation[1]
             target_coordinate.orientation.z = 0.0 #world_obj_rotation[2]
             target_coordinate.orientation.w = 0.0 #world_obj_rotation[3]
